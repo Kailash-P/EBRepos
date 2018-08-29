@@ -193,6 +193,11 @@ namespace ElectricityBoardApi.Controllers
             return list != null && list.Count > 0 ? list : new List<tblBillHistory>();
         }
 
+        /// <summary>
+        /// Load Consumption Chart
+        /// </summary>
+        /// <param name="consumerID"></param>
+        /// <returns></returns>
         [HttpPost]
         public List<Chart> LoadConsumptionChart(int consumerID)
         {
