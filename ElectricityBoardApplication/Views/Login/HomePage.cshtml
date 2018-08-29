@@ -1,0 +1,54 @@
+﻿<div class="row">
+    <div class="col-md-1"></div>
+    <div class="modal-body table table-bordered col-md-9" style="border-color:lightgreen;">
+        <div class="btn-group-lg">
+            <button type="button" class="btn-outline-dark" aria-label="Left Align" id="btnQuickPay" onclick="ShowQuickPayScreen()">
+                <i class="fa fa-money fa-lg" aria-hidden="true"></i> <br />Quick Pay
+            </button>
+            <button type="button" class="btn-outline-dark" aria-label="Left Align" id="btnPaymentDetail" onclick="ShowPaymentDetailScreen()">
+                <i class="fa fa-cc-visa fa-lg" aria-hidden="true"></i> <br />Payment Details
+            </button>
+            <button type="button" class="btn-outline-dark" aria-label="Left Align" onclick="ShowPreviousBillStatementScreen()">
+                <i class="fa fa-inr fa-lg" aria-hidden="true"></i> <br />Previous Bill Statements
+            </button>
+            <button type="button" class="btn-outline-dark" aria-label="Left Align">
+                <i class="fa fa-phone fa-lg" aria-hidden="true"></i> <br />Customer Support
+            </button>
+            <button type="button" class="btn-outline-dark" aria-label="Left Align" onclick="ShowEditProfileScreen()">
+                <i class="fa fa-user-circle-o fa-lg" aria-hidden="true"></i> <br />Edit Profile
+            </button>
+            <button type="button" class="btn-outline-dark" aria-label="Left Align" onclick="ShowAccountSummaryScreen()">
+                <i class="fa fa-file-pdf-o fa-lg" aria-hidden="true"></i> <br />Account Summary
+            </button>
+        </div>
+    </div>
+    <div class="col-md-1"></div>
+</div>
+<script type="text/javascript">
+    var loginID = 0;
+
+    $(document).ready(function () {
+        loginID = @ViewBag.LoginID;
+    });
+
+    function ShowQuickPayScreen() {
+        window.location.href = "/ElectricityBoardApplication/Login/QuickPayPage/?loginID=" + loginID;
+    }
+
+    function ShowPaymentDetailScreen() {
+        window.location.href = "/ElectricityBoardApplication/Login/PaymentDetailPage/?loginID=" + loginID;
+    }
+
+    function ShowEditProfileScreen() {
+        window.location.href = "/ElectricityBoardApplication/Login/EditProfilePage/?loginID=" + loginID;
+    }
+
+    function ShowPreviousBillStatementScreen() {
+        window.location.href = "/ElectricityBoardApplication/Login/PreviousBillStatementPage/?loginID=" + loginID;
+    }
+
+    function ShowAccountSummaryScreen() {
+        window.location.href = "/ElectricityBoardApplication/Login/AccountSummaryPage/?loginID=" + loginID;
+    }
+
+</script>

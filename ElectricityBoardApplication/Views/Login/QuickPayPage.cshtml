@@ -1,0 +1,237 @@
+﻿<div class="row">
+    <div class="col-md-4"></div>
+    <div id="QuickPayModal" class="col-md-4">
+        <div class="modal-dialog modal-lg">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <p>Quick Pay.</p>
+                    <button class="btn btn-outline-info" type="button" id="btnBackToHome" onclick="BackToHome()">
+                        <i class="fa fa-backward"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="">Region Code</label>
+                        <select class="form-control" id="ddlRegionCode">
+                            <option value="0">-- Select --</option>
+                            <option value="1">01-North Chennai</option>
+                            <option value="2">02-South Chennai</option>
+                            <option value="3">03-East Chennai</option>
+                            <option value="4">04-West Chennai</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="">Consumer No</label>
+                        <input type="number" min="0" placeholder="Consumer No" autocomplete="off" class="form-control" id="txtConsumerNo" />
+                    </div>
+                    <div class="form-group">
+                        <label for="">Captcha</label>
+                        <div class="input-group">
+                            <input type="text" id="txtAutoCaptcha" autocomplete="off" class="form-control" disabled />
+                            <button type="button" class="btn-group-sm" aria-label="Right Align" onclick="Captcha()">
+                                <i class="fa fa-refresh fa-lg" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="">Enter Captcha</label>
+                        <input type="text" placeholder="Enter Captcha" autocomplete="off" class="form-control" id="txtCaptcha" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" onclick="ShowPaymentRedirectScreen();" class="btn btn-primary float-right">Pay</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="col-md-4"></div>
+</div>
+
+@* ----- Payment Redirect Dialog ----- *@
+<div id="PaymentRedirectModal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <p>Payment Gateway.</p>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">                
+                <div class="form-group">
+                    <label for="">Banks</label>
+                    <select class="form-control" id="ddlBank">
+                        <option value="0">-- Select --</option>
+                        <option value="5">Allahabad Bank</option>
+                        <option value="6">UTI Bank</option>
+                        <option value="7">South Indian Bank</option>
+                        <option value="8">Bank of Baroda</option>
+                    </select>
+                </div>
+                <label class="radio">
+                    <input class="custom-radio" type="radio" name="rdPaymentOption" id="rdPaymentOption" value="1" checked>Net Banking
+                </label>                
+                <div class="form-group">
+                    <label for="">Amount</label>
+                    <input class="form-control" type="number" min="0" id="txtAmount" disabled/>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="QuickPay();" class="btn btn-primary float-right">Submit</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    var loginID = 0;
+    $(document).ready(function () {
+        Captcha();
+        loginID = @ViewBag.LoginID;
+    });
+
+    function Captcha() {
+        var alpha = new Array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z');
+        var i;
+        for (i = 0; i < 6; i++) {
+            var a = alpha[Math.floor(Math.random() * alpha.length)];
+            var b = alpha[Math.floor(Math.random() * alpha.length)];
+            var c = alpha[Math.floor(Math.random() * alpha.length)];
+            var d = alpha[Math.floor(Math.random() * alpha.length)];
+            var e = alpha[Math.floor(Math.random() * alpha.length)];
+            var f = alpha[Math.floor(Math.random() * alpha.length)];
+            var g = alpha[Math.floor(Math.random() * alpha.length)];
+        }
+        var code = a + ' ' + b + ' ' + ' ' + c + ' ' + d + ' ' + e + ' ' + f + ' ' + g;
+        $("#txtAutoCaptcha").val(code);
+        $('#txtCaptcha').val('');
+    }
+
+    function ShowPaymentRedirectScreen() {
+        var regionCodeID = $('#ddlRegionCode').val();
+        var consumerNo = $('#txtConsumerNo').val();
+        var captcha = $('#txtCaptcha').val().trim();
+        var autoCaptcha = $('#txtAutoCaptcha').val().trim().replace(/\s/g, '');
+
+        var errorExists = false;
+
+        if (regionCodeID == 0) {
+            $('#ddlRegionCode').addClass('btn-outline-danger');
+            errorExists = true;
+        }
+
+        if (!consumerNo || consumerNo == 0) {
+            $('#txtConsumerNo').addClass('btn-outline-danger');
+            errorExists = true;
+        }
+
+        if (!captcha || captcha == '') {
+            $('#txtCaptcha').addClass('btn-outline-danger');
+            errorExists = true;
+        }
+
+        if (captcha && captcha != '' && autoCaptcha != captcha) {
+            $('#txtCaptcha').addClass('btn-outline-danger');
+            alert('Captcha mismatch');
+            Captcha();
+            $('#txtCaptcha').val('');
+            errorExists = true;
+        }
+
+        if (errorExists) {
+            return false;
+        } else {
+            $('#PaymentRedirectModal').modal('show');
+            GetBillAmount(consumerNo);
+        }
+    }
+
+    function QuickPay() {
+
+        var consumerNo = $('#txtConsumerNo').val();
+        var bankId = $('#ddlBank').val();
+        var amount = $('#txtAmount').val();
+        var errorExists = false;
+
+
+        if (!bankId || bankId == 0) {
+            $('#ddlBank').addClass('btn-outline-danger');
+            errorExists = true;
+        }
+
+        debugger;
+        if (!ValidateConsumerNo(consumerNo,loginID)) {
+            errorExists = true;
+        }
+
+        if (errorExists) {
+            return false;
+        } else {
+
+            $.post('/ElectricityBoardApi/api/LoginApi/QuickPay/?consumerNo=' + consumerNo, function (jData) {
+                if (jData) {
+                    alert('Payment done successfully.');
+                    window.location.href = "/ElectricityBoardApplication/Login/HomePage/?loginID=" + loginID;
+                } else {
+                    alert('Payment already done for the ConsumerNo: ' + consumerNo);
+                }
+            });
+        }
+    }
+
+    function GetBillAmount(consumerNo) {
+        $.post('/ElectricityBoardApi/api/LoginApi/GetBillAmount/?consumerNo=' + consumerNo, function (jData) {
+            if (jData) {
+                $('#txtAmount').val(jData);
+            }
+        });
+    }
+
+    function ValidateConsumerNo(val,loginID) {
+        $.post('/ElectricityBoardApi/api/LoginApi/ValidateConsumerNo/?consumerNo=' + val + '&loginID=' + loginID, function (jData) {
+            if (!jData) {
+                alert('Invalid ConsumerNo, please check you input.');
+                $('#txtConsumerNo').addClass('btn-outline-danger');
+                return false;
+            }
+        });
+    }
+
+    function BackToHome() {
+        window.location.href = "/ElectricityBoardApplication/Login/HomePage/?loginID=" + loginID;
+    }
+
+    @*----- EVENT DECLARTIONS -----*@
+
+    $('#ddlRegionCode').change(function (val) {
+        $('#ddlRegionCode').removeClass('btn-outline-danger');
+    });
+
+    $('#txtConsumerNo').change(function () {
+        var val = $('#txtConsumerNo').val();
+        if (val && val != '') {
+            $('#txtConsumerNo').removeClass('btn-outline-danger');
+            ValidateConsumerNo(val, loginID);
+        }
+    });
+
+    $('#txtCaptcha').change(function (val) {
+        if (val && val != '') {
+            $('#txtCaptcha').removeClass('btn-outline-danger');
+        }
+    });
+
+    $('#ddlBank').change(function (val) {
+        $('#ddlBank').removeClass('btn-outline-danger');
+    });
+
+    //$('#txtAmount').change(function (val) {
+    //    if (val && val != '') {
+    //        $('#txtAmount').removeClass('btn-outline-danger');
+    //    }
+    //});
+
+</script>

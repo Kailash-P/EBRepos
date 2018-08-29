@@ -1,0 +1,105 @@
+﻿<div id="PaymentDetailPage" class="row">
+    <div class="modal-dialog modal-lg">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="col-md-5">
+                    <label for="">Consumer No</label>
+                    <select class="form-control" id="ddlConsumer"></select>
+                </div>
+                <button class="btn btn-outline-info" type="button" id="btnBackToHome" onclick="BackToHome()">
+                    <i class="fa fa-backward"></i>
+                </button>
+            </div>
+            <div class="modal-body">                
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th align="center">
+                                ConsumerNo
+                            </th>
+                            <th align="center">
+                                Consumer Name   
+                            </th>
+                            <th align="center">
+                                Address
+                            </th>
+                            <th align="center">
+                                Bill Amount
+                            </th>
+                            <th align="center">
+                                Bill Date
+                            </th>
+                            <th align="center">
+                                Paid
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody"></tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script type="text/javascript">
+    var loginID = 0;
+
+    $(document).ready(function () {
+        loginID = @ViewBag.LoginID;
+        LoadConsumers(loginID);
+    });
+
+    function LoadPaymentDetails(consumerID, loginID) {
+        $.post('/ElectricityBoardApi/api/LoginApi/LoadPaymentDetails/?consumerID=' + consumerID + '&loginID=' + loginID, function (jData) {
+            var strHtml = '';
+            if (jData && jData.length > 0) {
+                $.each(jData, function (key, item) {
+                    strHtml += '<tr>';
+                    strHtml += '<td>' + item.ConsumerNo + '</td>';
+                    strHtml += '<td>' + item.ConsumerName + '</td>';
+                    strHtml += '<td>' + item.Address + '</td>';
+                    strHtml += '<td>' + item.BillAmount + '</td>';
+                    strHtml += '<td>' + item.BillDate + '</td>';
+                    strHtml += item.Paid ? '<td><span class="fa fa-check">&nbsp;</span></td>' : '<td><span class="fa fa-times">&nbsp;</span></td>';
+                    strHtml += '</tr>';
+                });
+
+                $('#tbody').html(strHtml);
+                return true;
+            } else {
+                alert('No records found.');
+                $('#tbody').html('');
+                return false;
+            }
+        })
+    }
+
+    function LoadConsumers(id) {
+        $.post('/ElectricityBoardApi/api/LoginApi/LoadConsumer/?loginID=' + id, function (jData) {
+            debugger;
+            var strHtml = '<option value="0">-- Select --</option>';
+            if (jData && jData.length > 0) {
+                $.each(jData, function (key, item) {
+                    strHtml += '<option value="' + item.ID + '">' + item.ConsumerNo + '</option>';
+                });
+                $('#ddlConsumer').html(strHtml);
+            }
+        });
+    }
+
+    function BackToHome() {
+        window.location.href = "/ElectricityBoardApplication/Login/HomePage/?loginID=" + loginID;
+    }
+
+    @*----- EVENT DECLARATION -----*@
+    $('#ddlConsumer').change(function () {
+        if ($('#ddlConsumer').val() > 0) {
+            $('#ddlConsumer').removeClass('btn-outline-danger');
+            LoadPaymentDetails($('#ddlConsumer').val(), loginID);
+        } else {
+            $('#ddlConsumer').addClass('btn-outline-danger');
+        }
+    })
+
+</script>

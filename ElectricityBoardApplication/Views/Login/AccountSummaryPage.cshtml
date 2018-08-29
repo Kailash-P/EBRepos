@@ -1,0 +1,99 @@
+﻿<div class="row">
+    <div class="col-md-1"></div>
+    <div class="col-md-2">
+        
+    </div>
+    <div class="col-md-3">
+        <select id="ddlConsumer" class="form-control"></select>
+    </div>
+    <div class="col-md-5">
+        <div class="input-group">
+            
+            <button class="btn btn-outline-success" id="btnShowConsumptionChart" onclick="ShowConsumptionChart()">Show Units Consumption</button>
+        </div>
+    </div>
+    <div class="col-md-2"></div>
+</div>
+
+<div id="chartContainer"></div>
+<script type="text/javascript">
+
+    var loginID = 0;
+    $(document).ready(function () {
+        
+        loginID = @ViewBag.LoginID;
+        $('#chartContainer').toggle();
+        LoadConsumers(loginID);
+    });
+
+    function ShowConsumptionChart() {
+        $('#chartContainer').toggle();
+        LoadChart();
+    }
+
+    function LoadConsumers(id) {
+        $.post('/ElectricityBoardApi/api/LoginApi/LoadConsumer/?loginID=' + id, function (jData) {
+            debugger;
+            var strHtml = '<option value="0">-- Select --</option>';
+            if (jData && jData.length > 0) {
+                $.each(jData, function (key, item) {
+                    strHtml += '<option value="' + item.ID + '">' + item.ConsumerNo + '</option>';
+                });
+                $('#ddlConsumer').html(strHtml);
+            }
+        });
+    }
+
+    function LoadChart() {
+        debugger;
+        $.post('/ElectricityBoardApi/api/LoginApi/LoadConsumptionChart/?consumerID=' + $('#ddlConsumer').val(), function (jData) {
+            if (jData) {
+                
+
+                var object = [];
+                //$.each(jData, function (key, item) {
+                //    object.push({ y: item.y, label: item.label });
+                //});
+                //object.join({ y: 17363, label: "2005" });
+                //object.push({ y: 28726, label: "2006" });
+                //object.push({ y: 35000, label: "2007" });
+                //object.push({ y: 25250, label: "2008" });
+                //object.push({ y: 19750, label: "2009-10" });
+
+                //object.join(", ");
+                debugger;
+
+                var chart = new CanvasJS.Chart("chartContainer", {
+            theme: "light2",
+            animationEnabled: true,
+            title: {
+                text: "Electricity Units consumption"
+            },
+            axisX: {
+                title: "Months"
+            },
+            axisY: {
+                title: "Units"
+            },
+
+            data: [
+                {
+                    type: "spline",
+                    dataPoints: [
+
+                        { y: 17363, label: "2005" },
+                        { y: 28726, label: "2006" }
+                ],
+
+                //You can add dynamic data from the controller as shown below. Check the controller and uncomment the line which generates dataPoints.
+                //dataPoints: @Html.Raw(ViewBag.DataPoints),
+            }
+            ]
+        });
+
+        chart.render();
+            }
+        })
+
+    }
+</script>

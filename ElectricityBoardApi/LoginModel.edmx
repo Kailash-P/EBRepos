@@ -1,0 +1,340 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="LoginDatabaseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="tblBillHistory">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="BillDate" Type="datetime" Nullable="false" />
+          <Property Name="UnitsConsumed" Type="int" Nullable="false" />
+          <Property Name="BillAmount" Type="int" Nullable="false" />
+          <Property Name="Paid" Type="bit" Nullable="false" />
+          <Property Name="Consumer_ID" Type="int" />
+          <Property Name="BillPaidDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tblConsumer">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ConsumerNo" Type="int" Nullable="false" />
+          <Property Name="ConsumerName" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="RegionCode" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="Login_ID" Type="int" />
+        </EntityType>
+        <EntityType Name="tblLogin">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserName" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="Password" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="Address" Type="varchar(max)" Nullable="false" />
+          <Property Name="EmailId" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'ElectricityBoardDatabase.dbo.vPaymentDetails' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="vPaymentDetails">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="ConsumerNo" />
+            <PropertyRef Name="ConsumerName" />
+            <PropertyRef Name="Address" />
+            <PropertyRef Name="BillAmount" />
+            <PropertyRef Name="UnitsConsumed" />
+            <PropertyRef Name="Paid" />
+            <PropertyRef Name="BillDate" />
+            <PropertyRef Name="Login_ID" />
+            <PropertyRef Name="Consumer_ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="ConsumerNo" Type="int" Nullable="false" />
+          <Property Name="ConsumerName" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="Address" Type="varchar(max)" Nullable="false" />
+          <Property Name="BillAmount" Type="int" Nullable="false" />
+          <Property Name="UnitsConsumed" Type="int" Nullable="false" />
+          <Property Name="Paid" Type="bit" Nullable="false" />
+          <Property Name="BillDate" Type="datetime" Nullable="false" />
+          <Property Name="Login_ID" Type="int" Nullable="false" />
+          <Property Name="Consumer_ID" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'ElectricityBoardDatabase.dbo.vUnitsConsumption' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="vUnitsConsumption">
+          <Key>
+            <PropertyRef Name="Consumer_ID" />
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="Year" Type="varchar" MaxLength="20" />
+          <Property Name="UnitsConsumed" Type="int" />
+          <Property Name="Consumer_ID" Type="int" Nullable="false" />
+          <Property Name="ID" Type="bigint" Nullable="false" />
+        </EntityType>
+        <Association Name="FK__tblBillHi__Consu__412EB0B6">
+          <End Role="tblConsumer" Type="Self.tblConsumer" Multiplicity="0..1" />
+          <End Role="tblBillHistory" Type="Self.tblBillHistory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblConsumer">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tblBillHistory">
+              <PropertyRef Name="Consumer_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tblConsum__Login__2C3393D0">
+          <End Role="tblLogin" Type="Self.tblLogin" Multiplicity="0..1" />
+          <End Role="tblConsumer" Type="Self.tblConsumer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblLogin">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tblConsumer">
+              <PropertyRef Name="Login_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="LoginDatabaseModelStoreContainer">
+          <EntitySet Name="tblBillHistory" EntityType="Self.tblBillHistory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblConsumer" EntityType="Self.tblConsumer" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblLogin" EntityType="Self.tblLogin" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="vPaymentDetails" EntityType="Self.vPaymentDetails" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [vPaymentDetails].[ID] AS [ID], 
+    [vPaymentDetails].[ConsumerNo] AS [ConsumerNo], 
+    [vPaymentDetails].[ConsumerName] AS [ConsumerName], 
+    [vPaymentDetails].[Address] AS [Address], 
+    [vPaymentDetails].[BillAmount] AS [BillAmount], 
+    [vPaymentDetails].[UnitsConsumed] AS [UnitsConsumed], 
+    [vPaymentDetails].[Paid] AS [Paid], 
+    [vPaymentDetails].[BillDate] AS [BillDate], 
+    [vPaymentDetails].[Login_ID] AS [Login_ID], 
+    [vPaymentDetails].[Consumer_ID] AS [Consumer_ID]
+    FROM [dbo].[vPaymentDetails] AS [vPaymentDetails]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="vUnitsConsumption" EntityType="Self.vUnitsConsumption" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [vUnitsConsumption].[Year] AS [Year], 
+    [vUnitsConsumption].[UnitsConsumed] AS [UnitsConsumed], 
+    [vUnitsConsumption].[Consumer_ID] AS [Consumer_ID], 
+    [vUnitsConsumption].[ID] AS [ID]
+    FROM [dbo].[vUnitsConsumption] AS [vUnitsConsumption]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK__tblBillHi__Consu__412EB0B6" Association="Self.FK__tblBillHi__Consu__412EB0B6">
+            <End Role="tblConsumer" EntitySet="tblConsumer" />
+            <End Role="tblBillHistory" EntitySet="tblBillHistory" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tblConsum__Login__2C3393D0" Association="Self.FK__tblConsum__Login__2C3393D0">
+            <End Role="tblLogin" EntitySet="tblLogin" />
+            <End Role="tblConsumer" EntitySet="tblConsumer" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="LoginDatabaseModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="tblLogin">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Password" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Address" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="tblConsumers" Relationship="LoginDatabaseModel.FK__tblConsum__Login__2C3393D0" FromRole="tblLogin" ToRole="tblConsumer" />
+          <Property Name="EmailId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityContainer Name="ElectricityBoardDatabaseEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="tblLogins" EntityType="Self.tblLogin" />
+          <EntitySet Name="tblBillHistories" EntityType="LoginDatabaseModel.tblBillHistory" />
+          <EntitySet Name="tblConsumers" EntityType="LoginDatabaseModel.tblConsumer" />
+          <AssociationSet Name="FK__tblBillHi__Consu__412EB0B6" Association="LoginDatabaseModel.FK__tblBillHi__Consu__412EB0B6">
+            <End Role="tblConsumer" EntitySet="tblConsumers" />
+            <End Role="tblBillHistory" EntitySet="tblBillHistories" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tblConsum__Login__2C3393D0" Association="LoginDatabaseModel.FK__tblConsum__Login__2C3393D0">
+            <End Role="tblLogin" EntitySet="tblLogins" />
+            <End Role="tblConsumer" EntitySet="tblConsumers" />
+          </AssociationSet>
+          <EntitySet Name="vPaymentDetails" EntityType="LoginDatabaseModel.vPaymentDetail" />
+          <EntitySet Name="vUnitsConsumptions" EntityType="LoginDatabaseModel.vUnitsConsumption" />
+        </EntityContainer>
+        <EntityType Name="tblBillHistory">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BillDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UnitsConsumed" Type="Int32" Nullable="false" />
+          <Property Name="BillAmount" Type="Int32" Nullable="false" />
+          <Property Name="Paid" Type="Boolean" Nullable="false" />
+          <Property Name="Consumer_ID" Type="Int32" />
+          <NavigationProperty Name="tblConsumer" Relationship="LoginDatabaseModel.FK__tblBillHi__Consu__412EB0B6" FromRole="tblBillHistory" ToRole="tblConsumer" />
+          <Property Name="BillPaidDate" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+        <EntityType Name="tblConsumer">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ConsumerNo" Type="Int32" Nullable="false" />
+          <Property Name="ConsumerName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="RegionCode" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Login_ID" Type="Int32" />
+          <NavigationProperty Name="tblBillHistories" Relationship="LoginDatabaseModel.FK__tblBillHi__Consu__412EB0B6" FromRole="tblConsumer" ToRole="tblBillHistory" />
+          <NavigationProperty Name="tblLogin" Relationship="LoginDatabaseModel.FK__tblConsum__Login__2C3393D0" FromRole="tblConsumer" ToRole="tblLogin" />
+        </EntityType>
+        <Association Name="FK__tblBillHi__Consu__412EB0B6">
+          <End Type="LoginDatabaseModel.tblConsumer" Role="tblConsumer" Multiplicity="0..1" />
+          <End Type="LoginDatabaseModel.tblBillHistory" Role="tblBillHistory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblConsumer">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tblBillHistory">
+              <PropertyRef Name="Consumer_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tblConsum__Login__2C3393D0">
+          <End Type="LoginDatabaseModel.tblLogin" Role="tblLogin" Multiplicity="0..1" />
+          <End Type="LoginDatabaseModel.tblConsumer" Role="tblConsumer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblLogin">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tblConsumer">
+              <PropertyRef Name="Login_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="vPaymentDetail">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="ConsumerNo" />
+            <PropertyRef Name="ConsumerName" />
+            <PropertyRef Name="Address" />
+            <PropertyRef Name="BillAmount" />
+            <PropertyRef Name="UnitsConsumed" />
+            <PropertyRef Name="Paid" />
+            <PropertyRef Name="BillDate" />
+            <PropertyRef Name="Login_ID" />
+            <PropertyRef Name="Consumer_ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="ConsumerNo" Type="Int32" Nullable="false" />
+          <Property Name="ConsumerName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Address" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="BillAmount" Type="Int32" Nullable="false" />
+          <Property Name="UnitsConsumed" Type="Int32" Nullable="false" />
+          <Property Name="Paid" Type="Boolean" Nullable="false" />
+          <Property Name="BillDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Login_ID" Type="Int32" Nullable="false" />
+          <Property Name="Consumer_ID" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="vUnitsConsumption">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="Consumer_ID" />
+          </Key>
+          <Property Name="Year" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="UnitsConsumed" Type="Int32" />
+          <Property Name="ID" Type="Int64" Nullable="false" />
+          <Property Name="Consumer_ID" Type="Int32" Nullable="false" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="LoginDatabaseModelStoreContainer" CdmEntityContainer="ElectricityBoardDatabaseEntities">
+          <EntitySetMapping Name="tblLogins">
+            <EntityTypeMapping TypeName="LoginDatabaseModel.tblLogin">
+              <MappingFragment StoreEntitySet="tblLogin">
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblBillHistories">
+            <EntityTypeMapping TypeName="LoginDatabaseModel.tblBillHistory">
+              <MappingFragment StoreEntitySet="tblBillHistory">
+                <ScalarProperty Name="BillPaidDate" ColumnName="BillPaidDate" />
+                <ScalarProperty Name="Consumer_ID" ColumnName="Consumer_ID" />
+                <ScalarProperty Name="Paid" ColumnName="Paid" />
+                <ScalarProperty Name="BillAmount" ColumnName="BillAmount" />
+                <ScalarProperty Name="UnitsConsumed" ColumnName="UnitsConsumed" />
+                <ScalarProperty Name="BillDate" ColumnName="BillDate" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblConsumers">
+            <EntityTypeMapping TypeName="LoginDatabaseModel.tblConsumer">
+              <MappingFragment StoreEntitySet="tblConsumer">
+                <ScalarProperty Name="Login_ID" ColumnName="Login_ID" />
+                <ScalarProperty Name="RegionCode" ColumnName="RegionCode" />
+                <ScalarProperty Name="ConsumerName" ColumnName="ConsumerName" />
+                <ScalarProperty Name="ConsumerNo" ColumnName="ConsumerNo" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="vPaymentDetails">
+            <EntityTypeMapping TypeName="LoginDatabaseModel.vPaymentDetail">
+              <MappingFragment StoreEntitySet="vPaymentDetails">
+                <ScalarProperty Name="Consumer_ID" ColumnName="Consumer_ID" />
+                <ScalarProperty Name="Login_ID" ColumnName="Login_ID" />
+                <ScalarProperty Name="BillDate" ColumnName="BillDate" />
+                <ScalarProperty Name="Paid" ColumnName="Paid" />
+                <ScalarProperty Name="UnitsConsumed" ColumnName="UnitsConsumed" />
+                <ScalarProperty Name="BillAmount" ColumnName="BillAmount" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="ConsumerName" ColumnName="ConsumerName" />
+                <ScalarProperty Name="ConsumerNo" ColumnName="ConsumerNo" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="vUnitsConsumptions">
+            <EntityTypeMapping TypeName="LoginDatabaseModel.vUnitsConsumption">
+              <MappingFragment StoreEntitySet="vUnitsConsumption">
+                <ScalarProperty Name="Consumer_ID" ColumnName="Consumer_ID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="UnitsConsumed" ColumnName="UnitsConsumed" />
+                <ScalarProperty Name="Year" ColumnName="Year" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

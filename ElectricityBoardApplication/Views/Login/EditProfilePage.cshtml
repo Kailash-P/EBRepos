@@ -1,0 +1,115 @@
+﻿<div class="row">
+    <div class="col-md-4"></div>
+    <div id="QuickPayModal" class="col-md-4">
+        <div class="modal-dialog modal-lg">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <p>Edit Profile.</p>
+                    <button class="btn btn-outline-info" type="button" id="btnBackToHome" onclick="BackToHome()">
+                        <i class="fa fa-backward"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="">User Name</label>
+                        <input id="txtUserName" type="text" class="form-control" disabled />
+                    </div>
+                    <div class="form-group">
+                        <label for="">New Password</label>
+                        <input type="password" placeholder="New Password" id="txtNewPassword" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="">Re-enter New Password</label>
+                        <input type="password" placeholder="Re-enter New Password" id="txtReNewPassword" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="">Email</label>
+                        <input type="email" id="txtEmail" placeholder="Email" class="form-control" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" onclick="SaveProfile();" class="btn btn-primary float-right">Save</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="col-md-4"></div>
+</div>
+<script>
+
+    var loginID = 0;
+    $(document).ready(function () {
+        loginID = @ViewBag.LoginID;
+        LoadProfileDetails(loginID);
+    });
+
+    function LoadProfileDetails(val) {
+        $.post('/ElectricityBoardApi/api/LoginApi/LoadProfileDetails/?loginID=' + loginID, function (jData) {
+            if (jData && jData.length > 0) {
+                $('#txtUserName').val(jData[0].UserName);
+                $('#txtEmail').val(jData[0].Email != null ? jData[0].Email : '');
+            }
+        });
+    }
+
+    function SaveProfile() {
+        var userName = $('#txtUserName').val();
+        var newPassword = $('#txtNewPassword').val();
+        var reNewPassword = $('#txtReNewPassword').val();
+        var email = $('#txtEmail').val();
+
+        var errorExists = false;
+
+        if (!reNewPassword || reNewPassword == '') {
+            errorExists = true;
+            $('#txtReNewPassword').addClass('btn-outline-danger');
+        }
+
+        if (!newPassword || newPassword == '') {
+            errorExists = true;
+            $('#txtNewPassword').addClass('btn-outline-danger');
+        }
+
+        if (reNewPassword != newPassword) {
+            errorExists = true;
+            alert('Password does not match!!!');
+        }
+
+        if (errorExists) {
+            return false;
+        } else {
+            $.post('/ElectricityBoardApi/api/LoginApi/SaveProfile', { UserName: userName, NewPassword: newPassword, Email: email, ID: loginID }, function (jData) {
+                if (jData) {
+                    alert('Profile details saved successfully. Password has been changed please re-login.');
+                    window.location.href = "/ElectricityBoardApplication/Login/LoginPage";
+                } else {
+                    alert('Profile details not saved.');
+                    return false;
+                }
+            });
+        }
+    }
+
+    function BackToHome() {
+        window.location.href = "/ElectricityBoardApplication/Login/HomePage/?loginID=" + loginID;
+    }
+
+    @*----- EVENT DECLARTIONS -----*@
+
+    $('#txtReNewPassword').change(function () {
+        var val = $('#txtReNewPassword').val();
+        if (val && val != '') {
+            $('#txtReNewPassword').removeClass('btn-outline-danger');
+        }
+    });
+
+    $('#txtNewPassword').change(function () {
+        var val = $('#txtNewPassword').val();
+        if (val && val != '') {
+            $('#txtNewPassword').removeClass('btn-outline-danger');
+        }
+    });
+
+</script>
