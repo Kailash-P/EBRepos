@@ -507,7 +507,8 @@
                         $('#tbody').html(strHtml);
                         return false;
                     } else {
-                        $('#tbody').html(strHtml);
+                        $('#tbody').html('');
+                        $('#excelfile').val('');
                         alert('Records Imported successfully !!!');
                         return true;
                     }

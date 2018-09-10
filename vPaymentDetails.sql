@@ -1,4 +1,4 @@
-alter VIEW dbo.vPaymentDetails AS
+CREATE VIEW dbo.vPaymentDetails AS
 SELECT
 	tblBillHistory.ID,
 	tblConsumer.ConsumerNo,

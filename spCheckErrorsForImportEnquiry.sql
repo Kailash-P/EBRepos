@@ -1,4 +1,4 @@
-alter PROCEDURE [dbo].[spCheckErrorsForImportEnquiry]  
+CREATE PROCEDURE [dbo].[spCheckErrorsForImportEnquiry]  
 AS  
 BEGIN  
   

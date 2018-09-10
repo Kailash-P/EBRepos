@@ -283,7 +283,7 @@ namespace ElectricityBoardApplication.Controllers
                 ParameterName = "@XMLString"
             });
 
-            SqlConnection con = new SqlConnection("Data Source=B2ML28022;Initial Catalog=ElectricityBoardDatabase;User ID=sa;Password=Mindtree123");
+            SqlConnection con = new SqlConnection("Server=tcp:301chennai.database.windows.net,1433;Initial Catalog=ElectricityBoardDatabase;Persist Security Info=False;User ID=chennai;Password=Mindtree@123;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
             con.Open();
             SqlCommand cmd = new SqlCommand("EXEC dbo.spImportProfile @xmlString", con);
             cmd.Parameters.Add(parameters[0]);

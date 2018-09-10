@@ -1,4 +1,4 @@
-alter PROC dbo.spBulkInsertForImportProfile AS
+CREATE PROC dbo.spBulkInsertForImportProfile AS
 BEGIN
 	
 	DECLARE @LoginIDTable TABLE(ID INT, rowID INT IDENTITY(1,1))

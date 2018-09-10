@@ -1,4 +1,4 @@
-alter PROC dbo.spImportProfile(@XMLString NVARCHAR(MAX))  
+CREATE PROC dbo.spImportProfile(@XMLString NVARCHAR(MAX))  
 AS  
 BEGIN  
  DECLARE @xmlRoot varchar(max)  

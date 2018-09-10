@@ -195,7 +195,7 @@ namespace ElectricityBoardApi.Controllers
                     {
                         loginObj[0].Password = obj.NewPassword;
                         loginObj[0].EmailId = !string.IsNullOrEmpty(obj.Email) ? obj.Email : string.Empty;
-                        loginObj[0].Address = !string.IsNullOrEmpty(obj.Email) ? obj.Email : string.Empty;
+                        loginObj[0].Address = !string.IsNullOrEmpty(obj.Address) ? obj.Address : string.Empty;
                         loginObj[0].City = !string.IsNullOrEmpty(obj.City) ? obj.City : string.Empty;
                         loginObj[0].ZipCode = obj.ZipCode;
                         loginObj[0].ProfilePicture = ConvertBase64StringToByteArray(obj.ProfilePicture);

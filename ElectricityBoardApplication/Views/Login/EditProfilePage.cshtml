@@ -144,7 +144,7 @@
         $.post('/ElectricityBoardApi/api/LoginApi/LoadProfileDetails/?loginID=' + loginID, function (jData) {
             if (jData && jData.length > 0) {
                 $('#txtUserName').val(jData[0].UserName);
-                $('#txtEmail').val(jData[0].EmailId != null ? jData[0].EmailId : '');
+                $('#txtEmail').val(jData[0].Email != null ? jData[0].Email : '');
                 $('#txtAddress').val(jData[0].Address);
                 $('#txtCity').val(jData[0].City);
                 $('#txtState').val(jData[0].State);
