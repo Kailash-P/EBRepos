@@ -36,6 +36,11 @@
           <Property Name="Password" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="Address" Type="varchar(max)" Nullable="false" />
           <Property Name="EmailId" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="City" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="State" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="ZipCode" Type="int" Nullable="false" />
+          <Property Name="IsAdmin" Type="bit" Nullable="false" />
+          <Property Name="ProfilePicture" Type="varbinary(max)" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'ElectricityBoardDatabase.dbo.vPaymentDetails' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -138,31 +143,20 @@ warning 6002: The table/view 'ElectricityBoardDatabase.dbo.vUnitsConsumption' do
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="LoginDatabaseModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityType Name="tblLogin">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="UserName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Password" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Address" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="tblConsumers" Relationship="LoginDatabaseModel.FK__tblConsum__Login__2C3393D0" FromRole="tblLogin" ToRole="tblConsumer" />
-          <Property Name="EmailId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-        </EntityType>
         <EntityContainer Name="ElectricityBoardDatabaseEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="tblLogins" EntityType="Self.tblLogin" />
           <EntitySet Name="tblBillHistories" EntityType="LoginDatabaseModel.tblBillHistory" />
           <EntitySet Name="tblConsumers" EntityType="LoginDatabaseModel.tblConsumer" />
           <AssociationSet Name="FK__tblBillHi__Consu__412EB0B6" Association="LoginDatabaseModel.FK__tblBillHi__Consu__412EB0B6">
             <End Role="tblConsumer" EntitySet="tblConsumers" />
             <End Role="tblBillHistory" EntitySet="tblBillHistories" />
           </AssociationSet>
+          <EntitySet Name="vPaymentDetails" EntityType="LoginDatabaseModel.vPaymentDetail" />
+          <EntitySet Name="vUnitsConsumptions" EntityType="LoginDatabaseModel.vUnitsConsumption" />
+          <EntitySet Name="tblLogins" EntityType="LoginDatabaseModel.tblLogin" />
           <AssociationSet Name="FK__tblConsum__Login__2C3393D0" Association="LoginDatabaseModel.FK__tblConsum__Login__2C3393D0">
             <End Role="tblLogin" EntitySet="tblLogins" />
             <End Role="tblConsumer" EntitySet="tblConsumers" />
           </AssociationSet>
-          <EntitySet Name="vPaymentDetails" EntityType="LoginDatabaseModel.vPaymentDetail" />
-          <EntitySet Name="vUnitsConsumptions" EntityType="LoginDatabaseModel.vUnitsConsumption" />
         </EntityContainer>
         <EntityType Name="tblBillHistory">
           <Key>
@@ -201,18 +195,6 @@ warning 6002: The table/view 'ElectricityBoardDatabase.dbo.vUnitsConsumption' do
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__tblConsum__Login__2C3393D0">
-          <End Type="LoginDatabaseModel.tblLogin" Role="tblLogin" Multiplicity="0..1" />
-          <End Type="LoginDatabaseModel.tblConsumer" Role="tblConsumer" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="tblLogin">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="tblConsumer">
-              <PropertyRef Name="Login_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="vPaymentDetail">
           <Key>
             <PropertyRef Name="ID" />
@@ -233,7 +215,7 @@ warning 6002: The table/view 'ElectricityBoardDatabase.dbo.vUnitsConsumption' do
           <Property Name="BillAmount" Type="Int32" Nullable="false" />
           <Property Name="UnitsConsumed" Type="Int32" Nullable="false" />
           <Property Name="Paid" Type="Boolean" Nullable="false" />
-          <Property Name="BillDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="BillDate" Type="DateTime" Nullable="false" Precision="3" annotation:StoreGeneratedPattern="None" />
           <Property Name="Login_ID" Type="Int32" Nullable="false" />
           <Property Name="Consumer_ID" Type="Int32" Nullable="false" />
         </EntityType>
@@ -247,23 +229,40 @@ warning 6002: The table/view 'ElectricityBoardDatabase.dbo.vUnitsConsumption' do
           <Property Name="ID" Type="Int64" Nullable="false" />
           <Property Name="Consumer_ID" Type="Int32" Nullable="false" />
         </EntityType>
+        <EntityType Name="tblLogin">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Password" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Address" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="EmailId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="City" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="State" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="ZipCode" Type="Int32" Nullable="false" />
+          <Property Name="IsAdmin" Type="Boolean" Nullable="false" />
+          <Property Name="ProfilePicture" Type="Binary" Nullable="false" MaxLength="Max" FixedLength="false" />
+          <NavigationProperty Name="tblConsumers" Relationship="LoginDatabaseModel.FK__tblConsum__Login__2C3393D0" FromRole="tblLogin" ToRole="tblConsumer" />
+        </EntityType>
+        <Association Name="FK__tblConsum__Login__2C3393D0">
+          <End Type="LoginDatabaseModel.tblLogin" Role="tblLogin" Multiplicity="0..1" />
+          <End Type="LoginDatabaseModel.tblConsumer" Role="tblConsumer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblLogin">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tblConsumer">
+              <PropertyRef Name="Login_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="LoginDatabaseModelStoreContainer" CdmEntityContainer="ElectricityBoardDatabaseEntities">
-          <EntitySetMapping Name="tblLogins">
-            <EntityTypeMapping TypeName="LoginDatabaseModel.tblLogin">
-              <MappingFragment StoreEntitySet="tblLogin">
-                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
-                <ScalarProperty Name="Address" ColumnName="Address" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="UserName" ColumnName="UserName" />
-                <ScalarProperty Name="Password" ColumnName="Password" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="tblBillHistories">
             <EntityTypeMapping TypeName="LoginDatabaseModel.tblBillHistory">
               <MappingFragment StoreEntitySet="tblBillHistory">
@@ -311,6 +310,22 @@ warning 6002: The table/view 'ElectricityBoardDatabase.dbo.vUnitsConsumption' do
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="UnitsConsumed" ColumnName="UnitsConsumed" />
                 <ScalarProperty Name="Year" ColumnName="Year" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblLogins">
+            <EntityTypeMapping TypeName="LoginDatabaseModel.tblLogin">
+              <MappingFragment StoreEntitySet="tblLogin">
+                <ScalarProperty Name="ProfilePicture" ColumnName="ProfilePicture" />
+                <ScalarProperty Name="IsAdmin" ColumnName="IsAdmin" />
+                <ScalarProperty Name="ZipCode" ColumnName="ZipCode" />
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

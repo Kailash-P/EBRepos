@@ -1,0 +1,55 @@
+﻿@{
+    ViewBag.Title = "CustomerSupportPage";
+    DateTime now = DateTime.Now;
+
+}
+<div class="row">
+    <div class="col-md-2">
+    </div>
+    <div class="col-md-8">
+        <h2>Customer Support Page</h2>
+        <div id="consumer-queries">
+
+        </div>
+    </div>
+    <div class="col-md-2">
+        <button class="btn btn-outline-info" type="button" id="btnBackToHome" onclick="BackToHome()">
+            <i class="fa fa-backward"></i>
+        </button>
+    </div>
+</div>
+
+<script>
+
+    var loginID = 0;
+    var isAdmin = false;
+
+    $(() => {
+        $('#feedback-form').hide();
+        loginID = @ViewBag.LoginID;
+        isAdmin = @(ViewBag.IsAdmin.ToString().ToLower());
+    });
+
+    for (var i = 0; i < 5; i++) {
+        var query = $('<div ></div>', { 'id': 'individual-query' + i, 'class': 'modal-body table table-bordered col-md-9', 'style':'border-color:lightgreen;'});
+        query.html(`<p id="Username">Santhosh <small id="time">@now</small></p>
+                <p id="content">user raised query here!!!</p>
+                <input type="text" id="response${i}"placeholder="Enter Response" />
+                <button type="button" id="btnResponse${i}" class="btn btn-sm btn-info" onclick='handleClick(this.id)'>Reply</button>`);
+        console.log(query);
+        $(query).appendTo('#consumer-queries');
+        $('#consumer-queries').append('<br>');
+        $
+    }
+    function handleClick(e) {
+        console.log(e);
+    }
+
+    function BackToHome() {
+        if (!isAdmin) {
+            window.location.href = "/ElectricityBoardApplication/Login/HomePage/?loginID=" + loginID + "&IsAdmin=" + isAdmin;
+        } else {
+            window.location.href = "/ElectricityBoardApplication/Login/AdminHomePage/?loginID=" + loginID + "&IsAdmin=" + isAdmin;
+        }
+    }
+</script>

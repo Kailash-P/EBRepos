@@ -10,45 +10,59 @@
             </button>
             <button type="button" class="btn-outline-dark" aria-label="Left Align" onclick="ShowPreviousBillStatementScreen()">
                 <i class="fa fa-inr fa-lg" aria-hidden="true"></i> <br />Previous Bill Statements
-            </button>
-            <button type="button" class="btn-outline-dark" aria-label="Left Align">
-                <i class="fa fa-phone fa-lg" aria-hidden="true"></i> <br />Customer Support
-            </button>
+            </button>            
             <button type="button" class="btn-outline-dark" aria-label="Left Align" onclick="ShowEditProfileScreen()">
                 <i class="fa fa-user-circle-o fa-lg" aria-hidden="true"></i> <br />Edit Profile
             </button>
             <button type="button" class="btn-outline-dark" aria-label="Left Align" onclick="ShowAccountSummaryScreen()">
                 <i class="fa fa-file-pdf-o fa-lg" aria-hidden="true"></i> <br />Account Summary
             </button>
+            <button type="button" class="btn-outline-dark" aria-label="Left Align" onclick="ShowYourFeedbackScreen()">
+                <i class="fa fa-commenting-o fa-lg" aria-hidden="true"></i> <br />Your Feedback
+            </button>
         </div>
     </div>
-    <div class="col-md-1"></div>
+    <div class="col-md-1"><button class="btn" onclick="LogOff()" style="color:red"><i class="fa fa-power-off"></i></button></div>
 </div>
 <script type="text/javascript">
     var loginID = 0;
+    var isAdmin = false;
 
     $(document).ready(function () {
         loginID = @ViewBag.LoginID;
+         isAdmin = @(ViewBag.IsAdmin.ToString().ToLower());
     });
 
     function ShowQuickPayScreen() {
-        window.location.href = "/ElectricityBoardApplication/Login/QuickPayPage/?loginID=" + loginID;
+        window.location.href = "/ElectricityBoardApplication/Login/QuickPayPage/?loginID=" + loginID + "&IsAdmin=" + isAdmin;
+        
+        //window.location.href = history.pushState("/ElectricityBoardApplication/Login/QuickPayPage/?loginID=" + loginID + "&IsAdmin=" + isAdmin, '/ElectricityBoardApplication/Login/QuickPayPage/#');
+        //history.pushState("/ElectricityBoardApplication/Login/QuickPayPage/?loginID=" + loginID + "&IsAdmin=" + isAdmin, null, "/ElectricityBoardApplication/Login/QuickPayPage/")
     }
 
     function ShowPaymentDetailScreen() {
-        window.location.href = "/ElectricityBoardApplication/Login/PaymentDetailPage/?loginID=" + loginID;
+        window.location.href = "/ElectricityBoardApplication/Login/PaymentDetailPage/?loginID=" + loginID + "&IsAdmin=" + isAdmin;
     }
 
     function ShowEditProfileScreen() {
-        window.location.href = "/ElectricityBoardApplication/Login/EditProfilePage/?loginID=" + loginID;
+        window.location.href = "/ElectricityBoardApplication/Login/EditProfilePage/?loginID=" + loginID + "&IsAdmin=" + isAdmin;
     }
 
     function ShowPreviousBillStatementScreen() {
-        window.location.href = "/ElectricityBoardApplication/Login/PreviousBillStatementPage/?loginID=" + loginID;
+        window.location.href = "/ElectricityBoardApplication/Login/PreviousBillStatementPage/?loginID=" + loginID + "&IsAdmin=" + isAdmin;
     }
 
     function ShowAccountSummaryScreen() {
-        window.location.href = "/ElectricityBoardApplication/Login/AccountSummaryPage/?loginID=" + loginID;
+        window.location.href = "/ElectricityBoardApplication/Login/AccountSummaryPage/?loginID=" + loginID + "&IsAdmin=" + isAdmin;
+    }
+
+    function ShowYourFeedbackScreen() {
+        window.location.href = "/ElectricityBoardApplication/Login/YourFeedbackPage/?loginID=" + loginID + "&IsAdmin=" + isAdmin;
+    }
+
+    function LogOff() {
+        loginID = 0;
+        window.location.href = "/ElectricityBoardApplication/Login/LoginPage";
     }
 
 </script>

@@ -18,6 +18,7 @@ namespace ElectricityBoardApi
         public ElectricityBoardDatabaseEntities()
             : base("name=ElectricityBoardDatabaseEntities")
         {
+            this.Configuration.LazyLoadingEnabled = false;
         }
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -25,10 +26,10 @@ namespace ElectricityBoardApi
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<tblLogin> tblLogins { get; set; }
         public virtual DbSet<tblBillHistory> tblBillHistories { get; set; }
         public virtual DbSet<tblConsumer> tblConsumers { get; set; }
         public virtual DbSet<vPaymentDetail> vPaymentDetails { get; set; }
         public virtual DbSet<vUnitsConsumption> vUnitsConsumptions { get; set; }
+        public virtual DbSet<tblLogin> tblLogins { get; set; }
     }
 }

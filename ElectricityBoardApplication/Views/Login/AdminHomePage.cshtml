@@ -1,0 +1,66 @@
+﻿<div class="row">
+    <div class="col-md-1"></div>
+    <div class="modal-body table table-bordered col-md-9" style="border-color:lightgreen;">
+        <div class="btn-group-lg">
+            <button type="button" class="btn-outline-dark" aria-label="Left Align" id="btnAddProfile" onclick="ShowAddConsumerScreen()">
+                <i class="fa fa-user-plus fa-lg" aria-hidden="true"></i> <br />Add Consumer
+            </button>
+            <button type="button" class="btn-outline-dark" aria-label="Left Align" id="btnAddBill" onclick="ShowAddBillScreen()">
+                <i class="fa fa-inr fa-lg" aria-hidden="true"></i> <br />Add Bill
+            </button>
+            <button type="button" class="btn-outline-dark" aria-label="Left Align" onclick="ShowCustomerBillStatementScreen()">
+                <i class="fa fa-history fa-lg" aria-hidden="true"></i> <br />Consumer Bill Statements
+            </button>
+            <button type="button" class="btn-outline-dark" aria-label="Left Align" onclick="ShowCustomerSupportScreen()">
+                <i class="fa fa-envelope-o fa-lg" aria-hidden="true"></i> <br />Support Queries
+            </button>
+            <button type="button" class="btn-outline-dark" aria-label="Left Align" onclick="ShowEditProfileScreen()">
+                <i class="fa fa-user-circle-o fa-lg" aria-hidden="true"></i> <br />Edit Profile
+            </button>
+            <button type="button" class="btn-outline-dark" aria-label="Left Align" onclick="ShowAccountSummaryScreen()">
+                <i class="fa fa-file-pdf-o fa-lg" aria-hidden="true"></i> <br />Account Summary
+            </button>
+        </div>
+    </div>
+    <div class="col-md-1"><button class="btn" onclick="LogOff()" style="color:red"><i class="fa fa-power-off"></i></button></div>
+</div>
+<script type="text/javascript">
+    var loginID = 0;
+    var isAdmin = false;
+
+    $(document).ready(function () {
+        loginID = @ViewBag.LoginID;
+        isAdmin = @(ViewBag.IsAdmin.ToString().ToLower());
+        $('#feedback-form').hide();
+    });
+
+    function ShowAddConsumerScreen() {
+        window.location.href = "/ElectricityBoardApplication/Login/AddProfilePage/?loginID=" + loginID + "&IsAdmin=" + isAdmin;
+    }
+
+    function ShowAddBillScreen() {
+        window.location.href = "/ElectricityBoardApplication/Login/AddBillPage/?loginID=" + loginID + "&IsAdmin=" + isAdmin;
+    }
+
+    function ShowEditProfileScreen() {
+        window.location.href = "/ElectricityBoardApplication/Login/EditProfilePage/?loginID=" + loginID + "&IsAdmin=" + isAdmin;
+    }
+
+    function ShowCustomerBillStatementScreen() {
+        window.location.href = "/ElectricityBoardApplication/Login/CustomerBillStatementPage/?loginID=" + loginID + "&IsAdmin=" + isAdmin;
+    }
+
+    function ShowAccountSummaryScreen() {
+        window.location.href = "/ElectricityBoardApplication/Login/AccountSummaryPage/?loginID=" + loginID + "&IsAdmin=" + isAdmin;
+    }
+
+    function ShowCustomerSupportScreen() {
+        window.location.href = "/ElectricityBoardApplication/Login/CustomerSupportPage/?loginID=" + loginID + "&IsAdmin=" + isAdmin;
+    }
+
+    function LogOff() {
+        loginID = 0;
+        window.location.href = "/ElectricityBoardApplication/Login/LoginPage";
+    }
+
+</script>

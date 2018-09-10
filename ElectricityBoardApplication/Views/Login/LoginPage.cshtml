@@ -1,22 +1,29 @@
-﻿<div class="row" style="margin-top:200px;">
+﻿<div class="row" style="margin-top:100px;">
     <div class="col-md-4"></div>
     <div class="table table-bordered col-md-4" style="background-image:url(http://localhost/ElectricityBoardApplication/Content/Icons/ElectricityBoardAppIcon.png);">
         <div class="form-group">
             <label for="">User Name</label>
-            <input type="text" autocomplete="off" class="form-control" id="txtUserName" placeholder="User Name" required autofocus/>
+            <input type="text" onkeypress="IfEnterKeyPressed(event);" autocomplete="off" class="form-control" id="txtUserName" placeholder="User Name" required autofocus/>
         </div>
         <div class="form-group">
             <label for="">Password</label>
             <input type="password" onkeypress="IfEnterKeyPressed(event);" autocomplete="off" class="form-control" id="txtPassword" placeholder="Password" required/>
         </div>
         <div class="modal-footer">
-            <button type="submit" class="btn btn-outline-success float-right" id="btnLogin" onclick="Login()" >Login</button>
+            <button type="submit" class="btn btn-success float-right" id="btnLogin" onclick="Login()" >Login</button>
         </div>
+        <img src="~/Images/Loading_icon.gif" id="gif" style="display: block; margin: 0 auto; width: 100px; visibility: hidden;"/>
     </div>
     <div class="col-md-4"></div>
 </div>
 <script type="text/javascript">
+
+    $(() => {
+        $('#feedback-form').hide();
+    });
+
     function Login() {
+        $('#gif').css('visibility', 'visible');
         var userName = $('#txtUserName').val();
         var password = $('#txtPassword').val();
         var errorExist = false;
@@ -36,11 +43,16 @@
         }
 
         if (errorExist) {
+            $('#gif').css('visibility', 'hidden');
             return false;
         } else {
             $.post('/ElectricityBoardApi/api/LoginApi/ValidateLogin/?userName=' + userName +'&password='+ password, function (jData) {
-                if (jData > 0) {
-                    window.location.href = "/ElectricityBoardApplication/Login/HomePage/?loginID=" + jData;
+                if (jData != null && jData.length > 0) {
+                    if (jData[0].IsAdmin) {
+                        window.location.href = "/ElectricityBoardApplication/Login/AdminHomePage/?loginID=" + jData[0].ID + "&IsAdmin=" + jData[0].IsAdmin;
+                    } else {
+                        window.location.href = "/ElectricityBoardApplication/Login/HomePage/?loginID=" + jData[0].ID + "&IsAdmin=" + jData[0].IsAdmin;
+                    }
                 } else {
                     alert('Invalid Username and Password.');
                 }
@@ -62,7 +74,6 @@
 
     function IfEnterKeyPressed(e) {
         if (e.keyCode == 13) {
-
             Login();
         }
     }

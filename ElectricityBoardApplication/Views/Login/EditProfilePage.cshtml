@@ -1,7 +1,64 @@
-﻿<div class="row">
+﻿<style>
+    /*Profile Pic Start*/
+    .picture-container {
+        position: relative;
+        cursor: pointer;
+        text-align: center;
+    }
+
+    .picture {
+        width: 106px;
+        height: 106px;
+        background-color: #999999;
+        border: 4px solid #CCCCCC;
+        color: #FFFFFF;
+        border-radius: 50%;
+        margin: 0px auto;
+        overflow: hidden;
+        transition: all 0.2s;
+        -webkit-transition: all 0.2s;
+    }
+
+        .picture:hover {
+            border-color: #2ca8ff;
+        }
+
+    .content.ct-wizard-green .picture:hover {
+        border-color: #05ae0e;
+    }
+
+    .content.ct-wizard-blue .picture:hover {
+        border-color: #3472f7;
+    }
+
+    .content.ct-wizard-orange .picture:hover {
+        border-color: #ff9500;
+    }
+
+    .content.ct-wizard-red .picture:hover {
+        border-color: #ff3b30;
+    }
+
+    .picture input[type="file"] {
+        cursor: pointer;
+        display: block;
+        height: 100%;
+        left: 0;
+        opacity: 0 !important;
+        position: absolute;
+        top: 0;
+        width: 100%;
+    }
+
+    .picture-src {
+        width: 100%;
+    }
+    /*Profile Pic End*/
+</style>
+<div class="row">
     <div class="col-md-4"></div>
     <div id="QuickPayModal" class="col-md-4">
-        <div class="modal-dialog modal-lg">
+        <div class="container">
             <!-- Modal content-->
             <div class="modal-content">
                 <div class="modal-header">
@@ -11,6 +68,17 @@
                     </button>
                 </div>
                 <div class="modal-body">
+                    <div class="form-group">
+                        <div class="container">
+                            <div class="picture-container">
+                                <div class="picture">
+                                    <img src="~/Images/img_avatar.png" class="picture-src" id="wizardPicturePreview" title="">
+                                    <input type="file" id="wizard-picture" class="" accept="image/jpeg">
+                                </div>
+                                <h6 id="wizard-pictureHeader" class="">Choose Picture</h6>
+                            </div>
+                        </div>
+                    </div>
                     <div class="form-group">
                         <label for="">User Name</label>
                         <input id="txtUserName" type="text" class="form-control" disabled />
@@ -27,6 +95,22 @@
                         <label for="">Email</label>
                         <input type="email" id="txtEmail" placeholder="Email" class="form-control" />
                     </div>
+                    <div class="form-group">
+                        <label for="">Address</label>
+                        <textarea type="text" id="txtAddress" placeholder="Address" class="form-control"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="">City</label>
+                        <input type="text" id="txtCity" placeholder="City" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="">State</label>
+                        <input type="text" id="txtState" placeholder="State" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="">ZipCode</label>
+                        <input type="number" id="txtZipCode" placeholder="ZipCode" class="form-control" />
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" onclick="SaveProfile();" class="btn btn-primary float-right">Save</button>
@@ -40,16 +124,33 @@
 <script>
 
     var loginID = 0;
+    var isAdmin = false;
+
     $(document).ready(function () {
         loginID = @ViewBag.LoginID;
+        isAdmin = @(ViewBag.IsAdmin.ToString().ToLower());
         LoadProfileDetails(loginID);
+        // Prepare the preview for profile picture
+        $("#wizard-picture").change(function () {
+            readURL(this);
+        });
+        //LoadImage(loginID);
+        if (isAdmin) {
+            $('#feedback-form').hide();
+        }
     });
 
     function LoadProfileDetails(val) {
         $.post('/ElectricityBoardApi/api/LoginApi/LoadProfileDetails/?loginID=' + loginID, function (jData) {
             if (jData && jData.length > 0) {
                 $('#txtUserName').val(jData[0].UserName);
-                $('#txtEmail').val(jData[0].Email != null ? jData[0].Email : '');
+                $('#txtEmail').val(jData[0].EmailId != null ? jData[0].EmailId : '');
+                $('#txtAddress').val(jData[0].Address);
+                $('#txtCity').val(jData[0].City);
+                $('#txtState').val(jData[0].State);
+                $('#txtZipCode').val(jData[0].ZipCode);
+                $('#wizardPicturePreview').attr('src', `data:image/png;base64,${jData[0].ProfilePicture}`);
+                $('#wizardPicturePreview').html('');
             }
         });
     }
@@ -59,6 +160,10 @@
         var newPassword = $('#txtNewPassword').val();
         var reNewPassword = $('#txtReNewPassword').val();
         var email = $('#txtEmail').val();
+        var address = $('#txtAddress').val();
+        var city = $('#txtCity').val();
+        var zipCode = $('#txtZipCode').val();
+        var profilePicture = $('#wizardPicturePreview').attr('src');
 
         var errorExists = false;
 
@@ -80,8 +185,8 @@
         if (errorExists) {
             return false;
         } else {
-            $.post('/ElectricityBoardApi/api/LoginApi/SaveProfile', { UserName: userName, NewPassword: newPassword, Email: email, ID: loginID }, function (jData) {
-                if (jData) {
+            $.post('/ElectricityBoardApi/api/LoginApi/SaveProfile', { UserName: userName, NewPassword: newPassword, Email: email, ID: loginID, Address: address, City: city, ZipCode: zipCode, ProfilePicture: profilePicture }, function (jData) {
+                if (jData > 0) {
                     alert('Profile details saved successfully. Password has been changed please re-login.');
                     window.location.href = "/ElectricityBoardApplication/Login/LoginPage";
                 } else {
@@ -93,7 +198,58 @@
     }
 
     function BackToHome() {
-        window.location.href = "/ElectricityBoardApplication/Login/HomePage/?loginID=" + loginID;
+        if (!isAdmin) {
+            window.location.href = "/ElectricityBoardApplication/Login/HomePage/?loginID=" + loginID + "&IsAdmin=" + isAdmin;
+        } else {
+            window.location.href = "/ElectricityBoardApplication/Login/AdminHomePage/?loginID=" + loginID + "&IsAdmin=" + isAdmin;
+        }
+    }
+
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            $('#wizard-pictureHeader').html('');
+            reader.onload = function (e) {
+                $('#wizardPicturePreview').attr('src', e.target.result).fadeIn('slow');
+            }
+            
+            file = input.files[0];
+            reader.readAsDataURL(input.files[0]);
+
+            //var formData = new FormData();
+            
+            //formData.append("FileUpload", input.files[0]);
+            //formData.append("ID", loginID);
+            //$.ajax({
+            //    url: '/ElectricityBoardApplication/Login/SaveImageToAppData',
+            //    contentType: false, // Not to set any content header
+            //    processData: false, // Not to process data
+            //    data: formData,
+            //    type: "POST",
+            //    success: function (jData) {
+            //        if (jData != null && jData.length > 0) {
+
+            //        }
+            //    }
+            //});
+        }
+    }
+
+    function LoadImage(id) {
+        $.get('/ElectricityBoardApplication/Login/GetImageFromAppData', { loginID: id }, function (jData) {
+            if (jData && jData != '') {
+                $('#wizard-pictureHeader').html('');
+                $('#wizardPicturePreview').attr('src', jData).fadeIn('slow');
+            }
+        });
+    }
+
+    function GetImageBufferString(id) {
+        $.get('/ElectricityBoardApplication/Login/GetImageFromAppData', { loginID: id }, function (jData) {
+            if (jData && jData != '') {
+                return jData;
+            }
+        });
     }
 
     @*----- EVENT DECLARTIONS -----*@

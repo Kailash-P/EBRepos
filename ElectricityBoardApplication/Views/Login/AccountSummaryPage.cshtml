@@ -1,39 +1,59 @@
-﻿<div class="row">
-    <div class="col-md-1"></div>
-    <div class="col-md-2">
-        
-    </div>
-    <div class="col-md-3">
-        <select id="ddlConsumer" class="form-control"></select>
-    </div>
-    <div class="col-md-5">
-        <div class="input-group">
-            
-            <button class="btn btn-outline-success" id="btnShowConsumptionChart" onclick="ShowConsumptionChart()">Show Units Consumption</button>
+﻿<div id="AccountSummaryPage" class="row">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="col-md-2"></div>
+            <div class="col-md-3">
+                <select id="ddlConsumer" class="form-control"></select>
+            </div>
+            <div class="col-md-1">
+                <div class="input-group">
+                    <button class="btn btn-outline-success" id="btnShowConsumptionChart" onclick="ShowConsumptionChart()">
+                        <i class="fa fa-chevron-circle-down"></i>
+                        Show Units Consumption
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-5">
+            </div>
+            <div class="col-md-1">
+                <button class="btn btn-outline-info" type="button" id="btnBackToHome" onclick="BackToHome()">
+                    <i class="fa fa-backward"></i>
+                </button>
+            </div>
         </div>
     </div>
-    <div class="col-md-2"></div>
 </div>
 
 <div id="chartContainer"></div>
 <script type="text/javascript">
 
     var loginID = 0;
+    var isAdmin = false;
+
     $(document).ready(function () {
-        
+
         loginID = @ViewBag.LoginID;
-        $('#chartContainer').toggle();
-        LoadConsumers(loginID);
+        isAdmin = @(ViewBag.IsAdmin.ToString().ToLower());
+        LoadConsumers();
+        $('#chartContainer').highcharts('');
+        $('#chartContainer').empty();
+        if (isAdmin) {
+            $('#feedback-form').hide();
+        }
     });
 
     function ShowConsumptionChart() {
-        $('#chartContainer').toggle();
         LoadChart();
     }
 
-    function LoadConsumers(id) {
+    function LoadConsumers() {
+        var id = isAdmin ? 0 : loginID;
+        if (!isAdmin && id <= 0) {
+            alert('Please select a valid consumer!!!');
+            return false;
+        }
+
         $.post('/ElectricityBoardApi/api/LoginApi/LoadConsumer/?loginID=' + id, function (jData) {
-            debugger;
             var strHtml = '<option value="0">-- Select --</option>';
             if (jData && jData.length > 0) {
                 $.each(jData, function (key, item) {
@@ -45,55 +65,74 @@
     }
 
     function LoadChart() {
-        debugger;
         $.post('/ElectricityBoardApi/api/LoginApi/LoadConsumptionChart/?consumerID=' + $('#ddlConsumer').val(), function (jData) {
             if (jData) {
-                
+                if (jData != null && jData.length > 0) {
+                    var categoryArray = [];
+                    var dataArray = [];
+                    $.each(jData, function (i, d) { categoryArray.push(d.label); dataArray.push(parseInt(d.y)); });
 
-                var object = [];
-                //$.each(jData, function (key, item) {
-                //    object.push({ y: item.y, label: item.label });
-                //});
-                //object.join({ y: 17363, label: "2005" });
-                //object.push({ y: 28726, label: "2006" });
-                //object.push({ y: 35000, label: "2007" });
-                //object.push({ y: 25250, label: "2008" });
-                //object.push({ y: 19750, label: "2009-10" });
 
-                //object.join(", ");
-                debugger;
+                    var title = {
+                        text: 'Yearly Average Consumption'
+                    };
+                    var subtitle = {
+                        text: ''
+                    };
+                    var xAxis = {
+                        categories: categoryArray
+                    };
+                    var yAxis = {
+                        title: {
+                            text: 'Units'
+                        },
+                        plotLines: [{
+                            value: 0,
+                            width: 1,
+                            color: '#808080'
+                        }]
+                    };
 
-                var chart = new CanvasJS.Chart("chartContainer", {
-            theme: "light2",
-            animationEnabled: true,
-            title: {
-                text: "Electricity Units consumption"
-            },
-            axisX: {
-                title: "Months"
-            },
-            axisY: {
-                title: "Units"
-            },
+                    var tooltip = {
+                        valueSuffix: ''
+                    }
+                    var legend = {
+                        layout: 'vertical',
+                        align: 'right',
+                        verticalAlign: 'middle',
+                        borderWidth: 0
+                    };
+                    var series = [{
+                        name: 'Units',
+                        data: dataArray
+                    }
+                    ];
 
-            data: [
-                {
-                    type: "spline",
-                    dataPoints: [
+                    var json = {};
+                    json.title = title;
+                    json.subtitle = subtitle;
+                    json.xAxis = xAxis;
+                    json.yAxis = yAxis;
+                    json.tooltip = tooltip;
+                    json.legend = legend;
+                    json.series = series;
 
-                        { y: 17363, label: "2005" },
-                        { y: 28726, label: "2006" }
-                ],
+                    $('#chartContainer').highcharts(json);
 
-                //You can add dynamic data from the controller as shown below. Check the controller and uncomment the line which generates dataPoints.
-                //dataPoints: @Html.Raw(ViewBag.DataPoints),
+                } else {
+                    $('#chartContainer').highcharts('');
+                    $('#chartContainer').empty();
+                }
             }
-            ]
         });
 
-        chart.render();
-            }
-        })
+    }
 
+    function BackToHome() {
+        if (!isAdmin) {
+            window.location.href = "/ElectricityBoardApplication/Login/HomePage/?loginID=" + loginID + "&IsAdmin=" + isAdmin;
+        } else {
+            window.location.href = "/ElectricityBoardApplication/Login/AdminHomePage/?loginID=" + loginID + "&IsAdmin=" + isAdmin;
+        }
     }
 </script>

@@ -1,0 +1,596 @@
+﻿<style>
+    /*Profile Pic Start*/
+    .picture-container {
+        position: relative;
+        cursor: pointer;
+        text-align: center;
+    }
+
+    .picture {
+        width: 106px;
+        height: 106px;
+        background-color: #999999;
+        border: 4px solid #CCCCCC;
+        color: #FFFFFF;
+        border-radius: 50%;
+        margin: 0px auto;
+        overflow: hidden;
+        transition: all 0.2s;
+        -webkit-transition: all 0.2s;
+    }
+
+        .picture:hover {
+            border-color: #2ca8ff;
+        }
+
+    .content.ct-wizard-green .picture:hover {
+        border-color: #05ae0e;
+    }
+
+    .content.ct-wizard-blue .picture:hover {
+        border-color: #3472f7;
+    }
+
+    .content.ct-wizard-orange .picture:hover {
+        border-color: #ff9500;
+    }
+
+    .content.ct-wizard-red .picture:hover {
+        border-color: #ff3b30;
+    }
+
+    .picture input[type="file"] {
+        cursor: pointer;
+        display: block;
+        height: 100%;
+        left: 0;
+        opacity: 0 !important;
+        position: absolute;
+        top: 0;
+        width: 100%;
+    }
+
+    .picture-src {
+        width: 100%;
+    }
+    /*Profile Pic End*/
+
+    /*Toggle Start*/
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+    }
+
+        .switch input {
+            display: none;
+        }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+    input:checked + .slider {
+        background-color: #2196F3;
+    }
+
+    input:focus + .slider {
+        box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked + .slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+        border-radius: 34px;
+    }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+    /*Toggle End*/
+</style>
+<div class="row">
+    <div class="col-md-4">       
+    </div>
+    <div id="QuickPayModal" class="col-md-4">
+        <div class="input-group">
+            <p> Switch To Import Mode. </p>
+            &nbsp;
+
+            <label class="switch">
+                <input id="importToggle" type="checkbox" checked>
+                <span class="slider round"></span>               
+            </label>            
+        </div>
+        <div class="modal-dialog modal-lg">
+            <!-- Modal content-->
+            <div class="modal-content ">
+                <div class="modal-header">
+                    <p id="importToggleText"></p>
+                    <button class="btn btn-outline-info" type="button" id="btnBackToHome" onclick="BackToHome()">
+                        <i class="fa fa-backward"></i>
+                    </button>
+                </div>
+                <div id="divAddConsumer" class="modal-body">
+                    <div class="form-group">
+                        <div class="container">
+                            <div class="picture-container">
+                                <div class="picture">
+                                    <img src="~/Images/img_avatar.png" class="picture-src" id="wizardPicturePreview" title="">
+                                    <input type="file" id="wizard-picture" class="" accept="image/jpeg">
+                                </div>
+                                <h6 id="wizard-pictureHeader" class="">Choose Picture</h6>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="">User Name</label>
+                        <input id="txtUserName" placeholder="User Name" type="text" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="">Consumer No</label>
+                        <input id="txtConsumerNo" placeholder="Consumer No" type="number" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="">Region Code</label>
+                        <select class="form-control" id="ddlRegionCode">
+                            <option value="0">-- Select --</option>
+                            <option value="1">01-North Chennai</option>
+                            <option value="2">02-South Chennai</option>
+                            <option value="3">03-East Chennai</option>
+                            <option value="4">04-West Chennai</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="divAdmin">
+                        <label for="">Admin</label>
+                        <input type="checkbox" id="chkIsAdmin" class="form-check" />
+                    </div>
+                    <div class="form-group">
+                        <label for="">New Password</label>
+                        <input type="password" placeholder="New Password" id="txtNewPassword" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="">Re-enter New Password</label>
+                        <input type="password" placeholder="Re-enter New Password" id="txtReNewPassword" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="">Email</label>
+                        <input type="email" id="txtEmail" placeholder="Email" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="">Address</label>
+                        <textarea type="text" id="txtAddress" placeholder="Address" class="form-control"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="">City</label>
+                        <input type="text" id="txtCity" placeholder="City" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="">State</label>
+                        <input type="text" id="txtState" placeholder="State" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="">ZipCode</label>
+                        <input type="number" id="txtZipCode" placeholder="ZipCode" class="form-control" />
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" onclick="SaveProfile();" class="btn btn-primary float-right">Save</button>
+                    </div>
+                </div>        
+                <div id="divImportProfile" class="modal-body modal-lg">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Action
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="#" onclick="DownloadTemplate()"><i class="fa fa-download"></i> &nbsp; Download Template</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#" onclick="ImportProfiles()"><i class="fa fa-upload"></i> &nbsp;Import Profiles</a>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <a href="#"><input type="file" id="excelFile" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"></a>
+                            </div>
+                        </div>
+                        <div id="divEnquiryError">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            Row Number
+                                        </th>
+                                        <th>
+                                            Error Level
+                                        </th>
+                                        <th>
+                                            Column Name
+                                        </th>
+                                        <th>
+                                            Error Message
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4"></div>
+</div>
+<script>
+
+    var loginID = 0;
+    var isAdmin = false;
+    var id = 0;
+    var profileImageBuffer = '';
+
+    $(document).ready(function () {
+        loginID = @ViewBag.LoginID;
+        isAdmin = @(ViewBag.IsAdmin.ToString().ToLower());
+        //GetLastInsertedLoginID();
+        if (isAdmin) {
+            $('#divAdmin').show();
+        } else {
+            $('#divAdmin').hide();
+        }
+        // Prepare the preview for profile picture
+        $("#wizard-picture").change(function () {
+            readURL(this);
+        });
+        $('#importToggle').attr('checked', false);
+        $('#importToggleText').html('Add Profile.');
+        $('#divAddConsumer').show();
+        $('#divImportProfile').hide();
+        $('#feedback-form').hide();
+    });
+
+    function SaveProfile() {
+        var userName = $('#txtUserName').val();
+        var chkAdmin = $('#chkIsAdmin').val();
+        var newPassword = $('#txtNewPassword').val();
+        var reNewPassword = $('#txtReNewPassword').val();
+        var email = $('#txtEmail').val();
+        var address = $('#txtAddress').val();
+        var city = $('#txtCity').val();
+        var state = $('#txtState').val();
+        var zipCode = $('#txtZipCode').val();
+        var consumerNo = $('#txtConsumerNo').val();
+        var regionCode = $('#ddlRegionCode').val();
+        var profilePicture = $('#wizardPicturePreview').attr('src');
+
+        var errorExists = false;
+
+        if (!userName || userName == '')
+        {
+            errorExists = true;
+            $('#txtUserName').addClass('btn-outline-danger');
+        }
+
+        if (!consumerNo || consumerNo == '')
+        {
+            errorExists = true;
+            $('#txtConsumerNo').addClass('btn-outline-danger');
+        }
+
+        if (!regionCode || regionCode == 0)
+        {
+            errorExists = true;
+            $('#ddlRegionCode').addClass('btn-outline-danger');
+        }
+
+        if (!reNewPassword || reNewPassword == '') {
+            errorExists = true;
+            $('#txtReNewPassword').addClass('btn-outline-danger');
+        }
+
+        if (!newPassword || newPassword == '') {
+            errorExists = true;
+            $('#txtNewPassword').addClass('btn-outline-danger');
+        }
+
+        if (reNewPassword != newPassword) {
+            errorExists = true;
+            alert('Password does not match!!!');
+        }
+
+
+
+        var obj = {
+            UserName: userName,
+            NewPassword: newPassword,
+            Email: email,
+            Address: address,
+            City: city,
+            State: state,
+            ZipCode: zipCode,
+            IsAdmin: chkAdmin && chkAdmin == 'on' ? true : false,
+            ConsumerNo: parseInt(consumerNo),
+            RegionCode: regionCode,
+            ID: 0
+        };
+
+        if (errorExists) {
+            return false;
+        } else {
+          ValidateProfile(obj);
+        }
+    }
+
+    function BackToHome() {
+        if (!isAdmin) {
+            window.location.href = "/ElectricityBoardApplication/Login/HomePage/?loginID=" + loginID + "&IsAdmin=" + isAdmin;
+        } else {
+            window.location.href = "/ElectricityBoardApplication/Login/AdminHomePage/?loginID=" + loginID + "&IsAdmin=" + isAdmin;
+        }
+    }
+
+    function ValidateProfile(obj) {
+        var userName = $('#txtUserName').val();
+        var chkAdmin = $('#chkIsAdmin').is(':checked');
+        var newPassword = $('#txtNewPassword').val();
+        var reNewPassword = $('#txtReNewPassword').val();
+        var email = $('#txtEmail').val();
+        var address = $('#txtAddress').val();
+        var city = $('#txtCity').val();
+        var state = $('#txtState').val();
+        var zipCode = $('#txtZipCode').val();
+        var consumerNo = $('#txtConsumerNo').val();
+        var regionCode = $('#ddlRegionCode').val();
+        var profilePicture = $('#wizardPicturePreview').attr('src');
+        if (obj) {
+            $.post('/ElectricityBoardApi/api/LoginApi/ValidateProfile', {
+                UserName: userName,
+                NewPassword: newPassword,
+                Email: email,
+                Address: address,
+                City: city,
+                State: state,
+                ZipCode: zipCode,
+                IsAdmin: chkAdmin && chkAdmin == true ? true : false,
+                ConsumerNo: parseInt(consumerNo),
+                RegionCode: regionCode,
+                ID: 0
+            }, function (jData) {
+                if (jData != '') {
+                    alert(jData);
+                    return false;
+                } else {
+                    $.post('/ElectricityBoardApi/api/LoginApi/SaveProfile', {
+                        UserName: userName,
+                        NewPassword: newPassword,
+                        Email: email,
+                        Address: address,
+                        City: city,
+                        State: state,
+                        ZipCode: zipCode,
+                        IsAdmin: chkAdmin && chkAdmin == true ? true : false,
+                        ConsumerNo: parseInt(consumerNo),
+                        RegionCode: regionCode,
+                        ProfilePicture: profilePicture,
+                        ID: 0
+                    }, function (jData) {
+                        if (jData > 0) {
+                            alert('Profile details saved successfully.');
+                            BackToHome();
+                        } else {
+                            alert('Profile details not saved.');
+                            return false;
+                        }
+                    });
+                    return true;
+                }
+            });
+        }
+    }
+
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            $('#wizard-pictureHeader').html('');
+            reader.onload = function (e) {
+                $('#wizardPicturePreview').attr('src', e.target.result).fadeIn('slow');
+            }
+
+            file = input.files[0];
+            reader.readAsDataURL(input.files[0]);
+            //var formData = new FormData();
+            ////var file = document.getElementById("wizardPicturePreview").files[0];
+
+            //formData.append("FileUpload", input.files[0]);
+
+            //formData.append("ID", ++id);
+            //$.ajax({
+            //    url: '/ElectricityBoardApplication/Login/SaveImageToAppData',
+            //    contentType: false, // Not to set any content header
+            //    processData: false, // Not to process data
+            //    data: formData,
+            //    type: "POST",
+            //    success: function (jData) {
+            //        GetImageBufferString(id);
+            //    }
+            //});
+        }
+    }
+
+    function GetLastInsertedLoginID() {
+        $.get('/ElectricityBoardApi/api/LoginApi/GetLastInsertedLoginID', function (jData) {
+            if (jData > 0) {
+                id = jData;
+                return true;
+            }
+        });
+    }
+
+    function GetImageBufferString(id) {
+        $.get('/ElectricityBoardApplication/Login/GetImageFromAppData', { loginID: id }, function (jData) {
+            if (jData && jData != '') {
+                profileImageBuffer = jData;
+            }
+        });
+    }
+
+    function DownloadTemplate() {
+        $.post('/ElectricityBoardApi/api/LoginApi/DownloadImportProfileTemplate', function (jData) {
+            if (jData) {
+                debugger;
+                var blob = b64toBlob(jData, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+                saveAs(blob, "Import Profile Template");
+            }
+        })
+    }
+
+    function ImportProfiles() {
+
+        var totFiles = document.getElementById("excelFile").files.length;
+        if (totFiles == 0) {
+            alert("Please choose file to Import.");
+            return false;
+        }
+
+        var formData = new FormData();
+        var file = document.getElementById("excelFile").files[0];
+
+        formData.append("FileUpload", file);
+
+        if (file.type != null) {
+            $.ajax({
+                url: '/ElectricityBoardApplication/Login/ImportExcel',
+                contentType: false, // Not to set any content header
+                processData: false, // Not to process data
+                data: formData,
+                type: "POST",
+                success: function (jData) {
+                    if (jData != null && jData.length > 0) {
+                        var strHtml = '';
+                        debugger;
+                        $.each(jData, function (key, item) {
+                            strHtml += '<tr>';
+                            strHtml += '<td>' + item.RowNumber + '</td>';
+                            strHtml += '<td>' + item.ErrorLevel + '</td>';
+                            strHtml += '<td>' + item.ColumnName + '</td>';
+                            strHtml += '<td>' + item.ErrorMessage + '</td>';
+                            strHtml += '</tr>';
+                        });
+
+                        $('#tbody').html(strHtml);
+                        return false;
+                    } else {
+                        $('#tbody').html(strHtml);
+                        alert('Records Imported successfully !!!');
+                        return true;
+                    }
+                }
+            });
+        }
+    }
+
+    // Convert the base 64 string that the attachment is returned from the controller as and convert it into a Blob
+    function b64toBlob(b64Data, contentType, sliceSize) {
+        contentType = contentType || '';
+        sliceSize = sliceSize || 512;
+
+        var byteCharacters = atob(b64Data);
+        var byteArrays = [];
+
+        for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+            var slice = byteCharacters.slice(offset, offset + sliceSize);
+
+            var byteNumbers = new Array(slice.length);
+            for (var i = 0; i < slice.length; i++) {
+                byteNumbers[i] = slice.charCodeAt(i);
+            }
+
+            var byteArray = new Uint8Array(byteNumbers);
+
+            byteArrays.push(byteArray);
+        }
+
+        var blob = new Blob(byteArrays, { type: contentType });
+        return blob;
+    };
+
+    
+    @*----- EVENT DECLARTIONS -----*@
+
+    $('#txtUserName').change(function () {
+        var val = $('#txtUserName').val();
+        if (val && val != '') {
+            $('#txtUserName').removeClass('btn-outline-danger');
+        }
+    });
+
+    $('#txtConsumerNo').change(function () {
+        var val = $('#txtConsumerNo').val();
+        if (val && val != '') {
+            $('#txtConsumerNo').removeClass('btn-outline-danger');
+        }
+    });
+
+    $('#ddlRegionCode').change(function () {
+        var val = $('#ddlRegionCode').val();
+        if (val && val != '') {
+            $('#ddlRegionCode').removeClass('btn-outline-danger');
+        }
+    });
+    $('#txtReNewPassword').change(function () {
+        var val = $('#txtReNewPassword').val();
+        if (val && val != '') {
+            $('#txtReNewPassword').removeClass('btn-outline-danger');
+        }
+    });
+
+    $('#txtNewPassword').change(function () {
+        var val = $('#txtNewPassword').val();
+        if (val && val != '') {
+            $('#txtNewPassword').removeClass('btn-outline-danger');
+        }
+    });
+
+    $('#importToggle').change(function () {
+        var val = $('#importToggle').is(':checked');
+        $('#importToggleText').html('');
+        if (val) {
+            $('#importToggleText').html('Import Profiles.');
+            $('#divAddConsumer').hide();
+            $('#divImportProfile').show();
+        } else {
+            $('#importToggleText').html('Add Profile.');
+            $('#divAddConsumer').show();
+            $('#divImportProfile').hide();
+        }
+    })
+
+</script>
+

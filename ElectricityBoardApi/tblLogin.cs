@@ -25,6 +25,11 @@ namespace ElectricityBoardApi
         public string Password { get; set; }
         public string Address { get; set; }
         public string EmailId { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
+        public int ZipCode { get; set; }
+        public bool IsAdmin { get; set; }
+        public byte[] ProfilePicture { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tblConsumer> tblConsumers { get; set; }

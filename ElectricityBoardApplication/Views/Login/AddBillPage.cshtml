@@ -1,0 +1,232 @@
+﻿<div class="row">
+    <div class="col-md-4"></div>
+    <div id="QuickPayModal" class="col-md-4">
+        <div class="modal-dialog modal-lg">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <p>Add Bill.</p>
+                    <button class="btn btn-outline-info" type="button" id="btnBackToHome" onclick="BackToHome()">
+                        <i class="fa fa-backward"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="">Consumer No</label>
+                        <select id="ddlConsumer" class="form-control"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="">Bill Date</label>
+                        <input type="text" id="dtpBillDate" placeholder="dd/MM/yyyy" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="">Units Consumed</label>
+                        <input type="number" min="0" max="9999" id="txtUnitsConsumed" placeholder="Units" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="">Amount</label>
+                        <input type="number" id="txtAmount" placeholder="Amount" class="form-control" disabled/>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" onclick="SaveBill();" class="btn btn-primary float-right">Save</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="col-md-4" style="margin-top:75px;">
+        <div class="modal-dialog modal-sm">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <button type="button" class="btn btn-warning" data-toggle="collapse" data-target="#collapseTable">
+                        <i class="fa fa-chevron-circle-down"></i>
+                        Slab Rate.</button>
+                        <div class="collapse" id="collapseTable">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            From Unit
+                                        </th>
+                                        <th>
+                                            To Unit
+                                        </th>
+                                        <th>
+                                            Rate (Rs.)
+                                        </th>
+                                        <th>
+                                            Max Unit
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>100</td>
+                                        <td>1</td>
+                                        <td>100</td>
+                                    </tr>
+                                    <tr>
+                                        <td>101</td>
+                                        <td>200</td>
+                                        <td>1.5</td>
+                                        <td>200</td>
+                                    </tr>
+                                    <tr>
+                                        <td>201</td>
+                                        <td>300</td>
+                                        <td>3</td>
+                                        <td>300</td>
+                                    </tr>
+                                    <tr>
+                                        <td>301</td>
+                                        <td>500</td>
+                                        <td>4</td>
+                                        <td>500</td>
+                                    </tr>
+                                    <tr>
+                                        <td>500</td>
+                                        <td>Above</td>
+                                        <td>6</td>
+                                        <td>9999</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script>
+
+    var loginID = 0;
+    var isAdmin = false;
+
+    $(document).ready(function () {
+        loginID = @ViewBag.LoginID;
+        isAdmin = @(ViewBag.IsAdmin.ToString().ToLower());
+        LoadConsumers(loginID);
+        $('input[id*=dtp]').datepicker({
+            dateFormat: 'dd/mm/yy'
+        }); 
+        $('#feedback-form').hide();
+    });
+
+    function LoadConsumers(id) {
+        if (id > 0) {
+            $.post('/ElectricityBoardApi/api/LoginApi/LoadConsumer/?loginID=' + 0, function (jData) {
+                var strHtml = '<option value="0">-- Select --</option>';
+                if (jData && jData.length > 0) {
+                    $.each(jData, function (key, item) {
+                        strHtml += '<option value="' + item.ID + '">' + item.ConsumerNo + '</option>';
+                    });
+                    $('#ddlConsumer').html(strHtml);
+                }
+            });
+        } else {
+            alert('Please select a valid consumer!!!');
+            return false;
+        }
+    }
+
+    function SaveBill() {
+        var consumerID = $('#ddlConsumer').val();
+        var billDate = $('#dtpBillDate').val();
+        var amount = $('#txtAmount').val();
+        var units = $('#txtUnitsConsumed').val();
+        var errorExists = false;
+
+        if (!consumerID || consumerID == 0) {
+            $('#ddlConsumer').addClass('btn-outline-danger');
+            errorExists = true;
+        }
+
+        if (!billDate || billDate == '') {
+            $('#dtpBillDate').addClass('btn-outline-danger');
+            errorExists = true;
+        }
+
+        if (!units || units == 0) {
+            $('#txtUnitsConsumed').addClass('btn-outline-danger');
+            errorExists = true;
+        }
+
+        //if (!amount || amount == 0) {
+        //    $('#txtAmount').addClass('btn-outline-danger');
+        //    errorExists = true;
+        //}
+
+        if (errorExists) {
+            return false;
+        } else {
+            $.post('/ElectricityBoardApi/api/LoginApi/AddBill', { ConsumerID: consumerID, BillDate: billDate, Units: units, Amount: amount,ID: 0}, function (jData) {
+                if (jData) {
+                    alert('Bill saved successfully!!!');
+                    BackToHome();
+                } else {
+                    alert('Bill not added successfully!!!');
+                    return false;
+                }
+            })
+        }
+
+    }
+
+    function BackToHome() {
+        if (!isAdmin) {
+            window.location.href = "/ElectricityBoardApplication/Login/HomePage/?loginID=" + loginID + "&IsAdmin=" + isAdmin;
+        } else {
+            window.location.href = "/ElectricityBoardApplication/Login/AdminHomePage/?loginID=" + loginID + "&IsAdmin=" + isAdmin;
+        }
+    }
+
+    @*----- EVENT DECLARTIONS -----*@
+
+    $('#txtUnitsConsumed').change(function () {
+        var val = $('#txtUnitsConsumed').val();
+        if (val && val != '') {
+            debugger;
+            $('#txtUnitsConsumed').removeClass('btn-outline-danger');
+            if (val > 0 && val <= 100) {
+                $('#txtAmount').val(val * 1);
+            } else if (val > 100 && val <= 200) {
+                $('#txtAmount').val(val * 1.5);
+            } else if (val > 200 && val <= 300) {
+                $('#txtAmount').val(val * 3);
+            } else if (val > 300 && val <= 500) {
+                $('#txtAmount').val(val * 4);
+            } else if (val > 500 && val <= 9999) {
+                $('#txtAmount').val(val * 6);
+            }
+        }
+    });
+
+    //$('#txtAmount').change(function () {
+    //    var val = $('#txtAmount').val();
+    //    if (val && val != '') {
+    //        $('#txtAmount').removeClass('btn-outline-danger');
+    //    }
+    //});
+
+    $('#dtpBillDate').change(function () {
+        var val = $('#dtpBillDate').val();
+        if (val && val != '') {
+            $('#dtpBillDate').removeClass('btn-outline-danger');
+        }
+    });
+
+    $('#ddlConsumer').change(function () {
+        var val = $('#ddlConsumer').val();
+        if (val && val != '') {
+            $('#ddlConsumer').removeClass('btn-outline-danger');
+        }
+    });   
+
+</script>
+

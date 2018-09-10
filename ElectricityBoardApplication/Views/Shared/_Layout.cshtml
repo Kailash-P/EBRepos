@@ -9,33 +9,97 @@
     @Scripts.Render("~/bundles/modernizr")
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
-    <script src="~/Scripts/Canvas.js"></script>
+    <style>
+        #feedback-form {
+            position: fixed;
+            right: 5px;
+            bottom: 10px;
+            font-size: 14px;
+            
+        }
+
+        #close {
+            height: 420px;
+            width: 300px;
+            border: 1px solid black;
+            padding: 10px;
+        }
+
+        #info {
+            margin-top: 5px;
+            font-size: 12px;
+        }
+
+        #form-header {
+            text-align: center;
+            margin-top: -10px;
+            padding: 5px;
+            width: 300px;
+            margin-left: -10px;
+            background-color: black;
+            color: #ffffff;
+        }
+
+        #close-btn {
+            float: right;
+            font-size: 14px;
+            cursor: pointer
+        }
+
+        #message {
+            height: 150px;
+        }
+        #show {
+            color: #e3e3e3;
+            background-color: black;
+            border-radius: 5px;
+            padding: 5px 30px 1px 30px;
+            cursor: pointer;
+            margin-bottom: -20px;
+        }
+    </style>
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink("Electricity Board", "LoginPage", "Login", new { area = "" }, new { @class = "navbar-brand" })
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
-                </ul>
-            </div>
+    <div class="container body-content">
+        @RenderBody()
+    </div>
+    <div id="feedback-form">
+        <div id="show">
+            <p>Consumer Support <span class="fa fa-angle-up"></span></p>
+        </div>
+        <div id="close">
+            <div id="form-header">Consumer Support <span id="close-btn">&times;</span></div>
+            <p id="info">Leave a message and we'll get back to you.</p>
+            <label for="email">Email:</label><br />
+            <input class="form-control" type="email" id="txtConsumerEmail" autocomplete="off"/>
+            <p id="email-error"></p>
+            <label for="message">Message:</label><br />
+            <textarea class="form-control" id="txtConsumerMessage"></textarea>
+            <p id="message-error"></p>
+            <input id="sendEmail" type="submit" class="btn btn-primary form-control" style="background-color:lightgreen;border-color:forestgreen" value="Send Message" />
         </div>
     </div>
-    <div class="container body-content">
-        @RenderBody()        
-    </div>
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    @RenderSection("scripts", required: false)
 </body>
 </html>
+<script>
+    $(() => {
+        $('#close').hide();
+    });
+
+    $('#show').eq(0).click(() => {
+        $('#close').toggle();
+        $('#show').hide()
+    });
+
+    $('#sendEmail').click(() => {        
+        $('#show').toggle();
+        $('#close').hide();
+    });
+
+    $('#close-btn').click(() => {
+        $('#show').toggle();
+        $('#close').hide();
+    });
+
+
+</script>

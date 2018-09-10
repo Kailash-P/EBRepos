@@ -44,9 +44,11 @@
 </div>
 <script type="text/javascript">
     var loginID = 0;
+    var isAdmin = false;
 
     $(document).ready(function () {
         loginID = @ViewBag.LoginID;
+        isAdmin = @(ViewBag.IsAdmin.ToString().ToLower());
         LoadConsumers(loginID);
     });
 
@@ -89,7 +91,11 @@
     }
 
     function BackToHome() {
-        window.location.href = "/ElectricityBoardApplication/Login/HomePage/?loginID=" + loginID;
+        if (!isAdmin) {
+            window.location.href = "/ElectricityBoardApplication/Login/HomePage/?loginID=" + loginID + "&IsAdmin=" + isAdmin;
+        } else {
+            window.location.href = "/ElectricityBoardApplication/Login/AdminHomePage/?loginID=" + loginID + "&IsAdmin=" + isAdmin;
+        }
     }
 
     @*----- EVENT DECLARATION -----*@

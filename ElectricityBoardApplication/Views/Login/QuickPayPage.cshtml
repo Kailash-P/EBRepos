@@ -13,7 +13,7 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="">Region Code</label>
-                        <select class="form-control" id="ddlRegionCode">
+                        <select class="form-control" id="ddlRegionCode" disabled>
                             <option value="0">-- Select --</option>
                             <option value="1">01-North Chennai</option>
                             <option value="2">02-South Chennai</option>
@@ -88,10 +88,23 @@
 <script type="text/javascript">
 
     var loginID = 0;
+    var isAdmin = false;
+
     $(document).ready(function () {
         Captcha();
         loginID = @ViewBag.LoginID;
+        isAdmin = @(ViewBag.IsAdmin.ToString().ToLower());
+        GetConsumerDetails(loginID);
     });
+
+    function GetConsumerDetails(id) {
+        $.post('/ElectricityBoardApi/api/LoginApi/LoadConsumer/?loginID=' + id, function (jData) {
+            if (jData && jData.length > 0) {
+                debugger;
+                $('#ddlRegionCode').val(jData[0].RegionCode);
+            }
+        });
+    }
 
     function Captcha() {
         var alpha = new Array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z');
@@ -162,7 +175,6 @@
             errorExists = true;
         }
 
-        debugger;
         if (!ValidateConsumerNo(consumerNo,loginID)) {
             errorExists = true;
         }
@@ -201,7 +213,11 @@
     }
 
     function BackToHome() {
-        window.location.href = "/ElectricityBoardApplication/Login/HomePage/?loginID=" + loginID;
+        if (!isAdmin) {
+            window.location.href = "/ElectricityBoardApplication/Login/HomePage/?loginID=" + loginID + "&IsAdmin=" + isAdmin;
+        } else {
+            window.location.href = "/ElectricityBoardApplication/Login/AdminHomePage/?loginID=" + loginID + "&IsAdmin=" + isAdmin;
+        }
     }
 
     @*----- EVENT DECLARTIONS -----*@
@@ -228,10 +244,5 @@
         $('#ddlBank').removeClass('btn-outline-danger');
     });
 
-    //$('#txtAmount').change(function (val) {
-    //    if (val && val != '') {
-    //        $('#txtAmount').removeClass('btn-outline-danger');
-    //    }
-    //});
 
 </script>

@@ -5,13 +5,17 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="5ca3f45655ec470bbb98d4ccb36ce322" Name="Diagram1" ZoomLevel="64">
-        <EntityTypeShape EntityType="LoginDatabaseModel.tblLogin" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="LoginDatabaseModel.tblBillHistory" Width="1.5" PointX="5.25" PointY="4.875" />
         <EntityTypeShape EntityType="LoginDatabaseModel.tblConsumer" Width="1.5" PointX="3" PointY="4.875" />
         <AssociationConnector Association="LoginDatabaseModel.FK__tblBillHi__Consu__412EB0B6" />
-        <AssociationConnector Association="LoginDatabaseModel.FK__tblConsum__Login__2C3393D0" />
         <EntityTypeShape EntityType="LoginDatabaseModel.vPaymentDetail" Width="1.5" PointX="6.375" PointY="0.75" />
         <EntityTypeShape EntityType="LoginDatabaseModel.vUnitsConsumption" Width="1.5" PointX="3.375" PointY="0.75" />
+        <EntityTypeShape EntityType="LoginDatabaseModel.tblLogin" Width="1.5" PointX="0.875" PointY="0.875" />
+        <AssociationConnector Association="LoginDatabaseModel.FK__tblConsum__Login__2C3393D0" ManuallyRouted="true" >
+          <ConnectorPoint PointX="1.625" PointY="4.0090950520833317" />
+          <ConnectorPoint PointX="1.625" PointY="6.0574446614583328" />
+          <ConnectorPoint PointX="3" PointY="6.0574446614583328" />
+        </AssociationConnector>
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -1,0 +1,19 @@
+make Region Code disable for the consumer while quick pay - done
+
+capture feedback from consumer (Customer support) for sentiment analysis
+
+add profile picture in ADd/Edit profile (Blob storage) - done
+
+bulk insert of consumers (storage queue)
+
+implement one feature using Azure function
+
+create a forum to post and receive feedback
+
+if payment is not done on time send a email using azure scheduler
+
+
+need to implement atleast 5-6 NFR(non functional requirements)
+
+
+Email subscription pop up for each month

@@ -1,0 +1,163 @@
+﻿<div id="CustomerBillStatementPage" class="row">
+    <div class="modal-content">
+        <div class="modal-header">         
+            <div class="col-md-5">
+                <label for="">Consumer No</label>
+                <select id="ddlConsumer" class="form-control"></select>
+            </div>
+            <div class="col-md-1">
+                <button type="button" id="btnSearch" class="btn btn-primary" onclick="Search();" style="margin-top:30px;">Search</button>
+            </div>
+            <div class="col-md-5">
+            </div>
+            <div class="col-md-1">
+                <button class="btn btn-outline-info" type="button" id="btnBackToHome" onclick="BackToHome()">
+                    <i class="fa fa-backward"></i>
+                </button>
+            </div>
+        </div>
+        <div class="modal-body">
+            <p>Consumer Bill Statements.</p>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th align="center">
+                            Bill Date
+                        </th>
+                        <th align="center">
+                            Units Consumed
+                        </th>
+                        <th align="center">
+                            Bill Amount
+                        </th>
+                        <th align="center">
+                            Paid
+                        </th>
+                        <th align="center">
+                            Bill Paid Date
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="tbody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@*<style>
+    i.fa {
+        display: inline-block;
+        border-radius: 60px;
+        box-shadow: 0px 0px 2px #888;
+        padding: 0.5em 0.6em;
+    }
+</style>*@
+<script type="text/javascript">
+
+    var loginID = 0;
+    var isAdmin = false;
+    var consumerBillList = [];
+
+    $(document).ready(function () {
+        loginID = @ViewBag.LoginID;
+        isAdmin = @(ViewBag.IsAdmin.ToString().ToLower());
+        LoadConsumers();
+        $('#feedback-form').hide();
+    });
+
+    function LoadConsumers() {
+        $.post('/ElectricityBoardApi/api/LoginApi/LoadConsumer/?loginID=' + 0, function (jData) {
+            var strHtml = '<option value="0">-- Select --</option>';
+            if (jData && jData.length > 0) {
+                $.each(jData, function (key, item) {
+                    strHtml += '<option value="' + item.ID + '">' + item.ConsumerNo + '</option>';
+                });
+                $('#ddlConsumer').html(strHtml);
+            }
+        });
+    }
+
+    function Search() {
+
+        var consumerID = $('#ddlConsumer').val();
+
+        if (!consumerID || consumerID == 0) {
+            alert('Please select a valid Consumer No.');
+            return false;
+        }
+
+        $.post('/ElectricityBoardApi/api/LoginApi/SearchConsumerBillStatements/?consumerID='+consumerID, function (jData) {
+            var strHtml = '';
+            if (jData && jData.length > 0) {
+                $.each(jData, function (key, item) {
+                    strHtml += '<tr>';
+                    strHtml += '<td><a style="text-decoration:false;" href="#" onclick=EditBill(' + item.Consumer_ID + ',' + item.ID + ')><i style="display:inline-block; border-radius:25px; box-shadow: 0px 0px 10px #888; padding: 0.5em 0.6em; color:#8a8a8a" class="fa fa-ellipsis-h"></i></a> | <a style="text-decoration:false;" href="#" onclick=DeleteBill(' + item.Consumer_ID + ',' + item.ID + ')><i style="display:inline-block; border-radius:25px; box-shadow: 0px 0px 10px #888; padding: 0.5em 0.6em; color:#8a8a8a" class="fa fa-trash"></i></a></td>';
+                    strHtml += '<td>' + item.BillDate + '</td>';
+                    strHtml += '<td>' + item.UnitsConsumed + '</td>';
+                    strHtml += '<td>' + item.BillAmount + '</td>';
+                    strHtml += item.Paid ? '<td><span class="fa fa-check">&nbsp;</span></td>' : '<td><span class="fa fa-times">&nbsp;</span></td>';
+                    strHtml += '<td>' + item.BillDate + '</td>';
+                    strHtml += '</tr>';
+                });
+                consumerBillList = jData;
+                $('#tbody').html(strHtml);
+                return true;
+            } else {
+                alert('No records found.');
+                $('#tbody').html('');
+                return false;
+            }
+        })
+    }
+
+    function BackToHome() {
+        if (!isAdmin) {
+            window.location.href = "/ElectricityBoardApplication/Login/HomePage/?loginID=" + loginID + "&IsAdmin=" + isAdmin;
+        } else {
+            window.location.href = "/ElectricityBoardApplication/Login/AdminHomePage/?loginID=" + loginID + "&IsAdmin=" + isAdmin;
+        }
+    }
+
+    function EditBill(consumerID, id) {
+        var obj = $.grep(consumerBillList, function (item) { return item.ID == id });
+
+        if (obj && obj.length > 0 && obj[0].Paid) {
+            alert('Cannot edit a Paid entry.');
+            return false;
+        }
+    }
+
+    function DeleteBill(consumerID, id) {
+        if (consumerID > 0 && id > 0) {
+
+            debugger;
+            var obj = $.grep(consumerBillList, function (item) { return item.ID == id });
+
+            if (obj && obj.length > 0 && obj[0].Paid) {
+                alert('Cannot delete a Paid entry.');
+                return false;
+            }
+
+            var res = confirm('Do you want to delete?');
+            if (res) {
+                debugger
+                $.post('/ElectricityBoardApi/api/LoginApi/DeleteConsumerBill/?consumerID=' + consumerID +'&ID=' + id, function (jData) {
+                    if (jData) {
+                        alert('Record deleted successfully!!!');
+                        Search();
+                        return true;
+                    } else {
+                        alert('Record not deleted successfully !!!');
+                        return false;
+                    }
+                })
+            }
+        }
+    }
+
+    @*----- EVENT DECLARATION -----*@
+
+
+</script>
+
+
