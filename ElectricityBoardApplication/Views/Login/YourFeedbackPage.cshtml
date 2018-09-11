@@ -85,7 +85,7 @@
                             </div>                            
                         </div>
                         &nbsp;
-                        <input type="text" id="txtConsumerName" class="form-control" placeholder="Your Name" />
+                        <input type="text" id="txtLoginUserName" class="form-control" placeholder="Your Name"  disabled/>
                     </div>
                     <p>Don't worry, you can always change this on your profile</p>
                 </div>
@@ -105,6 +105,7 @@
     $(() => {
         loginID = @ViewBag.LoginID;
         isAdmin = @(ViewBag.IsAdmin.ToString().ToLower());
+        GetSessionLoginName();
         // Prepare the preview for profile picture
         $("#wizard-picture").change(function () {
             readURL(this);
@@ -114,8 +115,42 @@
         }
     });
 
-    function SubmitFeedback() {
+    function GetSessionLoginName() {
+        $.get('/ElectricityBoardApi/api/LoginApi/GetSessionLoginName', function (jData) {
+            $('#txtLoginUserName').val(jData);
+        });
+    }
 
+    function SubmitFeedback() {
+        var feedBack = $('#txtFeedback').val();
+        var headline = $('#txtFeedbackHeadline').val();
+        var image = $('#wizardPicturePreview').attr('src');
+        var name = $('#txtLoginUserName').val();
+
+        var errorExists = false;
+
+        if (!headline || headline == '') {
+            $('#txtFeedbackHeadline').addClass('btn-outline-danger');
+            errorExists = true;
+        }
+
+        if (!feedBack || feedBack == '') {
+            $('#txtFeedback').addClass('btn-outline-danger');
+            errorExists = true;
+        }
+
+        if (errorExists) {
+            return false;
+        } else {
+            $.post('/ElectricityBoardApi/api/LoginApi/SaveFeedBack', { FeedBack: feedBack, FeedBackHeadline: headline, UserName: name, ProfilePicture: image  }, function (jData) {
+                if (jData > 0) {
+                    alert('Thanks for your feedback!!!');
+                    BackToHome();
+                } else {
+                    alert('FeedBack not saved, please check the input.');
+                }
+            });
+        }
     }
 
     function readURL(input) {
@@ -125,8 +160,6 @@
             reader.onload = function (e) {
                 $('#wizardPicturePreview').attr('src', e.target.result).fadeIn('slow');
             }
-
-            file = input.files[0];
             reader.readAsDataURL(input.files[0]);
         }
     }
@@ -138,4 +171,21 @@
             window.location.href = "/ElectricityBoardApplication/Login/AdminHomePage/?loginID=" + loginID + "&IsAdmin=" + isAdmin;
         }
     }
+
+    @*----- EVENT DECLARATIONS -----*@
+
+    $('#txtFeedbackHeadline').change(function () {
+        var val = $('#txtFeedbackHeadline').val();
+        if (val && val != '') {
+            $('#txtFeedbackHeadline').removeClass('btn-outline-danger');
+        }
+    });
+
+    $('#txtFeedback').change(function () {
+        var val = $('#txtFeedback').val();
+        if (val && val != '') {
+            $('#txtFeedback').removeClass('btn-outline-danger');
+        }
+    });
+
 </script>

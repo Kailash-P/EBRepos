@@ -57,10 +57,11 @@
             cursor: pointer;
             margin-bottom: -20px;
         }
+
     </style>
 </head>
 <body>
-    <div class="container body-content">
+    <div id="MainBody" class="container body-content" >
         @RenderBody()
     </div>
     <div id="feedback-form">
@@ -74,9 +75,7 @@
             <input class="form-control" type="email" id="txtConsumerEmail" autocomplete="off" disabled/>
             <p id="email-error"></p>
             <label for="message">Message:</label><br />
-            <textarea class="form-control" id="txtConsumerMessage"></textarea>
-            <br />
-            <br />
+            <textarea rows="6" class="form-control" id="txtConsumerMessage"></textarea>
             <hr />
             <input id="sendEmail" type="submit" class="btn btn-primary form-control" style="background-color:lightgreen;border-color:forestgreen" value="Send Message" onclick="SendEmail();"/>
         </div>

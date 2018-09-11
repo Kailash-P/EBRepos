@@ -10,5 +10,7 @@ namespace ElectricityBoardApi.Models
         public static int Login_ID { get; set; }
 
         public static string LoginEmail { get; set; }
+
+        public static string LoginName { get; set; }
     }
 }

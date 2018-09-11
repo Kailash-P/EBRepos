@@ -43,6 +43,7 @@ namespace ElectricityBoardApi.Controllers
                 if(list != null && list.Count > 0)
                 {
                     Session.Login_ID = list[0].ID;
+                    Session.LoginName = list[0].UserName;
                     Session.LoginEmail = list[0].EmailId;
                     return list;
                 }
@@ -496,6 +497,12 @@ namespace ElectricityBoardApi.Controllers
         }
 
         [HttpGet]
+        public string GetSessionLoginName()
+        {
+            return Session.LoginName;
+        }
+
+        [HttpGet]
         public string GetSessionEmail()
         {
             return Session.LoginEmail;
@@ -542,6 +549,24 @@ namespace ElectricityBoardApi.Controllers
             }
 
             return false;
+        }
+
+        [HttpPost]
+        public int SaveFeedBack(FeedBackModel model)
+        {
+            tblFeedback feedBackObj = new tblFeedback();
+            if(model != null)
+            {
+                feedBackObj.Headline = model.FeedBackHeadline;
+                feedBackObj.Feedback = model.FeedBack;
+                feedBackObj.ConsumerProfilePicture = ConvertBase64StringToByteArray(model.ProfilePicture);
+                feedBackObj.Consumer_ID = db.tblConsumers.Where(x => x.Login_ID == Session.Login_ID).FirstOrDefault().ID;
+                feedBackObj.ConsumerName = model.UserName;
+
+                db.tblFeedbacks.Add(feedBackObj);
+                db.SaveChanges();                
+            }
+            return feedBackObj.ID > 0 ? feedBackObj.ID : 0;
         }
 
         #endregion Member Functions

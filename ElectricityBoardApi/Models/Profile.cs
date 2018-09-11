@@ -34,4 +34,15 @@ namespace ElectricityBoardApi.Models
         public int ID { get; set; } // ID
 
     }
+
+    public class FeedBackModel
+    {
+        public string FeedBack { get; set; }
+
+        public string FeedBackHeadline { get; set; }
+
+        public string UserName { get; set; }
+
+        public string ProfilePicture { get; set; }
+    }
 }
