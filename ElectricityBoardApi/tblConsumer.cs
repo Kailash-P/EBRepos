@@ -18,6 +18,8 @@ namespace ElectricityBoardApi
         public tblConsumer()
         {
             this.tblBillHistories = new HashSet<tblBillHistory>();
+            this.tblCustomerSupports = new HashSet<tblCustomerSupport>();
+            this.tblFeedbacks = new HashSet<tblFeedback>();
         }
     
         public int ID { get; set; }
@@ -29,5 +31,9 @@ namespace ElectricityBoardApi
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tblBillHistory> tblBillHistories { get; set; }
         public virtual tblLogin tblLogin { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<tblCustomerSupport> tblCustomerSupports { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<tblFeedback> tblFeedbacks { get; set; }
     }
 }

@@ -1,13 +1,13 @@
-﻿@{
-    ViewBag.Title = "CustomerSupportPage";
-    DateTime now = DateTime.Now;
-
-}
-<div class="row">
+﻿<div class="row">
     <div class="col-md-2">
     </div>
     <div class="col-md-8">
-        <h2>Customer Support Page</h2>
+        <h2>Support Queries</h2>
+        <select class="form-control" id="ddlIssueFilter">
+            <option value="0">Un-Resolved</option>
+            <option value="1">Resolved</option>
+        </select>
+        <hr />
         <div id="consumer-queries">
 
         </div>
@@ -28,21 +28,49 @@
         $('#feedback-form').hide();
         loginID = @ViewBag.LoginID;
         isAdmin = @(ViewBag.IsAdmin.ToString().ToLower());
+        LoadSupportQueries(0);
     });
 
-    for (var i = 0; i < 5; i++) {
-        var query = $('<div ></div>', { 'id': 'individual-query' + i, 'class': 'modal-body table table-bordered col-md-9', 'style':'border-color:lightgreen;'});
-        query.html(`<p id="Username">Santhosh <small id="time">@now</small></p>
-                <p id="content">user raised query here!!!</p>
-                <input type="text" id="response${i}"placeholder="Enter Response" />
-                <button type="button" id="btnResponse${i}" class="btn btn-sm btn-info" onclick='handleClick(this.id)'>Reply</button>`);
-        console.log(query);
-        $(query).appendTo('#consumer-queries');
-        $('#consumer-queries').append('<br>');
-        $
+    function LoadSupportQueries(val) {
+        $('#consumer-queries').html('');
+        $.get('/ElectricityBoardApi/api/LoginApi/LoadCustomerSupportIssues/?isResolved=' + val, function (jData) {
+            if (jData && jData.length > 0) {
+                var strHtml = '';
+                $.each(jData, function (key, item) {
+                    strHtml += '<div id="' + item.ID + '" class ="modal-body table table-bordered col-md-9" style = "border-color:lightgreen;">';
+                    strHtml += `<p id="Username"> Consumer Name: ` + item.ConsumerName + `</p>
+                                <p> Raised On: ` + item.RaisedDate + `</p>
+                                <p id="content"> Concern: `+ item.Concern + `</p>`;
+
+                    strHtml += 'Resolved Status: ';
+
+                    if (item.IsResolved) {
+                        strHtml += '<span class="fa fa-check">&nbsp;</span>'
+                    } else {
+                        strHtml += '<span class="fa fa-times">&nbsp;</span>';
+                        strHtml += `<div class="input-group">
+                                    <input class="form-control" type="text" id="response${item.ID}"placeholder="Enter Response" /> &nbsp; &nbsp;
+                                    <button type="button" id="btnResponse${item.ID}" class="btn btn-sm btn-info" onclick='ResolveIssue(` + item.ID + `, "` + item.ConsumerName + `", "` + item.ConsumerEmail + `")'>Reply</button>
+                                </div>`;
+                    };
+                    
+                    strHtml += '</div>';
+                });
+                
+                $('#consumer-queries').html(strHtml);
+            }
+        })
     }
-    function handleClick(e) {
-        console.log(e);
+
+
+
+    function ResolveIssue(id, name, email) {
+        var response = $('#response' + id + '').val();
+        $.post('/ElectricityBoardApi/api/LoginApi/ResolveCustomerSupportIssue/?ID=' + id + '&resolvedMessage=' + response + '&consumerName=' + name + '&consumerEmail=' + email, function (jData) {
+            if (jData) {
+                LoadSupportQueries(0);
+            }
+        });
     }
 
     function BackToHome() {
@@ -52,4 +80,9 @@
             window.location.href = "/ElectricityBoardApplication/Login/AdminHomePage/?loginID=" + loginID + "&IsAdmin=" + isAdmin;
         }
     }
+
+    $('#ddlIssueFilter').change(function () {
+        var val = $('#ddlIssueFilter').val();
+        LoadSupportQueries(val);
+    })
 </script>

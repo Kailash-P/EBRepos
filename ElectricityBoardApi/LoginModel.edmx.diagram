@@ -12,10 +12,17 @@
         <EntityTypeShape EntityType="LoginDatabaseModel.vUnitsConsumption" Width="1.5" PointX="3.375" PointY="0.75" />
         <EntityTypeShape EntityType="LoginDatabaseModel.tblLogin" Width="1.5" PointX="0.875" PointY="0.875" />
         <AssociationConnector Association="LoginDatabaseModel.FK__tblConsum__Login__2C3393D0" ManuallyRouted="true" >
-          <ConnectorPoint PointX="1.625" PointY="4.0090950520833317" />
-          <ConnectorPoint PointX="1.625" PointY="6.0574446614583328" />
-          <ConnectorPoint PointX="3" PointY="6.0574446614583328" />
+          <ConnectorPoint PointX="1.625" PointY="4.0090950520833326" />
+          <ConnectorPoint PointX="1.625" PointY="6.24974609375" />
+          <ConnectorPoint PointX="3" PointY="6.24974609375" />
         </AssociationConnector>
+        <EntityTypeShape EntityType="LoginDatabaseModel.tblCustomerSupport" Width="1.5" PointX="5.25" PointY="11.375" />
+        <EntityTypeShape EntityType="LoginDatabaseModel.tblFeedback" Width="1.5" PointX="5.25" PointY="8.25" />
+        <EntityTypeShape EntityType="LoginDatabaseModel.ImportError" Width="1.5" PointX="7.375" PointY="4.75" />
+        <EntityTypeShape EntityType="LoginDatabaseModel.ImportProfile" Width="1.5" PointX="7.375" PointY="7.75" />
+        <AssociationConnector Association="LoginDatabaseModel.FK__tblCustom__Consu__1F63A897" />
+        <AssociationConnector Association="LoginDatabaseModel.FK__tblFeedba__Consu__09746778" />
+        <EntityTypeShape EntityType="LoginDatabaseModel.vCustomerSupport" Width="1.5" PointX="8.375" PointY="0.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

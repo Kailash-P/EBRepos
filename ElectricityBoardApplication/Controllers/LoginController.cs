@@ -1,5 +1,7 @@
 ﻿using ElectricityBoardApplication.Models;
 using ExcelDataReader;
+using SendGrid;
+using SendGrid.Helpers.Mail;
 using System;
 using System.Collections;
 using System.Collections.Generic;

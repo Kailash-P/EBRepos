@@ -70,13 +70,15 @@
         <div id="close">
             <div id="form-header">Consumer Support <span id="close-btn">&times;</span></div>
             <p id="info">Leave a message and we'll get back to you.</p>
-            <label for="email">Email:</label><br />
-            <input class="form-control" type="email" id="txtConsumerEmail" autocomplete="off"/>
+            <label for="email">From:</label><br />
+            <input class="form-control" type="email" id="txtConsumerEmail" autocomplete="off" disabled/>
             <p id="email-error"></p>
             <label for="message">Message:</label><br />
             <textarea class="form-control" id="txtConsumerMessage"></textarea>
-            <p id="message-error"></p>
-            <input id="sendEmail" type="submit" class="btn btn-primary form-control" style="background-color:lightgreen;border-color:forestgreen" value="Send Message" />
+            <br />
+            <br />
+            <hr />
+            <input id="sendEmail" type="submit" class="btn btn-primary form-control" style="background-color:lightgreen;border-color:forestgreen" value="Send Message" onclick="SendEmail();"/>
         </div>
     </div>
 </body>
@@ -84,14 +86,55 @@
 <script>
     $(() => {
         $('#close').hide();
+        GetSessionEmail();
     });
+
+    function GetSessionEmail() {
+        $.get('/ElectricityBoardApi/api/LoginApi/GetSessionEmail', function (jData) {
+            $('#txtConsumerEmail').val(jData);
+        })
+    }
+
+    function SendEmail() {
+
+        var fromEmail = $('#txtConsumerEmail').val();
+        var message = $('#txtConsumerMessage').val();
+
+        var errorExists = false;
+
+        if (!fromEmail || fromEmail == '') {
+            $('#txtConsumerEmail').addClass('btn-outline-danger');
+            errorExists = true;
+        }
+
+        if (!message || message == '') {
+            $('#txtConsumerMessage').addClass('btn-outline-danger');
+            errorExists = true;
+        }
+
+        if (errorExists) {
+            return false;
+        } else {
+            $.post('/ElectricityBoardApi/api/LoginApi/SendConsumerSupportEmail/?from=' + fromEmail + '&message=' + message, function (jData) {
+                if (jData == '') {
+                    alert('Mail sent successfully!!!');
+                    return true;
+                } else {
+                    alert('Mail not delivered.');
+                    return false;
+                }
+            });
+        }
+    }
+
+    @*----- EVENT DECLARATION -----*@
 
     $('#show').eq(0).click(() => {
         $('#close').toggle();
         $('#show').hide()
     });
 
-    $('#sendEmail').click(() => {        
+    $('#sendEmail').click(() => {
         $('#show').toggle();
         $('#close').hide();
     });
@@ -101,5 +144,19 @@
         $('#close').hide();
     });
 
+
+    $('#txtConsumerEmail').change(function () {
+        var val = $('#txtConsumerEmail').val();
+        if (val && val != '') {
+            $('#txtConsumerEmail').removeClass('btn-outline-danger');
+        }
+    });
+
+    $('#txtConsumerMessage').change(function () {
+        var val = $('#txtConsumerMessage').val();
+        if (val && val != '') {
+            $('#txtConsumerMessage').removeClass('btn-outline-danger');
+        }
+    });
 
 </script>

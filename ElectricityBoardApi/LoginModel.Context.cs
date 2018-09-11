@@ -12,6 +12,8 @@ namespace ElectricityBoardApi
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
+    using System.Data.Entity.Core.Objects;
+    using System.Linq;
     
     public partial class ElectricityBoardDatabaseEntities : DbContext
     {
@@ -31,5 +33,29 @@ namespace ElectricityBoardApi
         public virtual DbSet<vPaymentDetail> vPaymentDetails { get; set; }
         public virtual DbSet<vUnitsConsumption> vUnitsConsumptions { get; set; }
         public virtual DbSet<tblLogin> tblLogins { get; set; }
+        public virtual DbSet<tblCustomerSupport> tblCustomerSupports { get; set; }
+        public virtual DbSet<tblFeedback> tblFeedbacks { get; set; }
+        public virtual DbSet<ImportError> ImportErrors { get; set; }
+        public virtual DbSet<ImportProfile> ImportProfiles { get; set; }
+        public virtual DbSet<vCustomerSupport> vCustomerSupports { get; set; }
+    
+        public virtual int spBulkInsertForImportProfile()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("spBulkInsertForImportProfile");
+        }
+    
+        public virtual int spCheckErrorsForImportEnquiry()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("spCheckErrorsForImportEnquiry");
+        }
+    
+        public virtual ObjectResult<string> spImportProfile(string xMLString)
+        {
+            var xMLStringParameter = xMLString != null ?
+                new ObjectParameter("XMLString", xMLString) :
+                new ObjectParameter("XMLString", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<string>("spImportProfile", xMLStringParameter);
+        }
     }
 }

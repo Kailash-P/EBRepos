@@ -164,6 +164,7 @@
         var city = $('#txtCity').val();
         var zipCode = $('#txtZipCode').val();
         var profilePicture = $('#wizardPicturePreview').attr('src');
+        var state = $('#txtState').val();
 
         var errorExists = false;
 
@@ -185,7 +186,7 @@
         if (errorExists) {
             return false;
         } else {
-            $.post('/ElectricityBoardApi/api/LoginApi/SaveProfile', { UserName: userName, NewPassword: newPassword, Email: email, ID: loginID, Address: address, City: city, ZipCode: zipCode, ProfilePicture: profilePicture }, function (jData) {
+            $.post('/ElectricityBoardApi/api/LoginApi/SaveProfile', { UserName: userName, NewPassword: newPassword, Email: email, ID: loginID, Address: address, City: city, ZipCode: zipCode, ProfilePicture: profilePicture,State:state }, function (jData) {
                 if (jData > 0) {
                     alert('Profile details saved successfully. Password has been changed please re-login.');
                     window.location.href = "/ElectricityBoardApplication/Login/LoginPage";

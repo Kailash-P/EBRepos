@@ -11,7 +11,7 @@
             <button type="button" class="btn-outline-dark" aria-label="Left Align" onclick="ShowCustomerBillStatementScreen()">
                 <i class="fa fa-history fa-lg" aria-hidden="true"></i> <br />Consumer Bill Statements
             </button>
-            <button type="button" class="btn-outline-dark" aria-label="Left Align" onclick="ShowCustomerSupportScreen()">
+            <button type="button" class="btn-outline-dark" aria-label="Left Align" onclick="ShowSupportQueriesScreen()">
                 <i class="fa fa-envelope-o fa-lg" aria-hidden="true"></i> <br />Support Queries
             </button>
             <button type="button" class="btn-outline-dark" aria-label="Left Align" onclick="ShowEditProfileScreen()">
@@ -54,7 +54,7 @@
         window.location.href = "/ElectricityBoardApplication/Login/AccountSummaryPage/?loginID=" + loginID + "&IsAdmin=" + isAdmin;
     }
 
-    function ShowCustomerSupportScreen() {
+    function ShowSupportQueriesScreen() {
         window.location.href = "/ElectricityBoardApplication/Login/CustomerSupportPage/?loginID=" + loginID + "&IsAdmin=" + isAdmin;
     }
 

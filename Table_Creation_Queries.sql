@@ -73,7 +73,11 @@ CREATE TABLE tblCustomerSupport(
 	ID INT IDENTITY(1,1) PRIMARY KEY(ID)
 )
 
+ALTER TABLE tblCustomerSupport ADD RaisedDate DATETIME DEFAULT(0) NOT NULL
 
+ALTER TABLE tblCustomerSupport ADD ResolvedDate DATETIME DEFAULT(0) NOT NULL
+
+ALTER TABLE tblCustomerSupport ADD Severity INT DEFAULT(0) NOT NULL
 
 SELECT * FROM tblLogin
 

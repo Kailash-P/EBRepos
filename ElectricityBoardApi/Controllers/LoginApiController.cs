@@ -12,6 +12,8 @@ using System.Web;
 using System.Web.Http;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
+using SendGrid;
+using SendGrid.Helpers.Mail;
 
 namespace ElectricityBoardApi.Controllers
 {
@@ -40,6 +42,8 @@ namespace ElectricityBoardApi.Controllers
                 var list = db.tblLogins.Where(x => x.UserName.ToLower() == userName.Trim().ToLower() && x.Password == password).ToList();
                 if(list != null && list.Count > 0)
                 {
+                    Session.Login_ID = list[0].ID;
+                    Session.LoginEmail = list[0].EmailId;
                     return list;
                 }
             }
@@ -199,6 +203,7 @@ namespace ElectricityBoardApi.Controllers
                         loginObj[0].City = !string.IsNullOrEmpty(obj.City) ? obj.City : string.Empty;
                         loginObj[0].ZipCode = obj.ZipCode;
                         loginObj[0].ProfilePicture = ConvertBase64StringToByteArray(obj.ProfilePicture);
+                        loginObj[0].State = obj.State;
 
                         db.Entry(loginObj[0]).State = EntityState.Modified;
                         db.SaveChanges();
@@ -427,6 +432,119 @@ namespace ElectricityBoardApi.Controllers
             return dt;
         }
 
+        [HttpPost]
+        public string SendConsumerSupportEmail([FromUri]string from, [FromUri]string message)
+        {
+            var result = string.Empty;
+            var consumerObj = LoadConsumer(Session.Login_ID)[0];
+
+            try
+            {
+                if (consumerObj != null)
+                {
+                    var complaintID = SaveCustomerComplaint(consumerObj.ID, from, message);
+                    if (complaintID > 0)
+                    {
+                        EmailParameters param = new EmailParameters();
+                        param.ID = complaintID;
+                        param.fromEmailAddress = from;
+                        param.toEmailAddress = "mr.p.kailash@gmail.com";
+                        param.consumerName = consumerObj.ConsumerName;
+                        param.resolvedMessage = message;
+
+                        SendEmail.TriggerMail(param);
+
+                        result = string.Empty;
+                    }
+                }
+            }
+            catch
+            {
+                result = "Error";
+            }
+
+
+            return result;
+        }
+
+        public int SaveCustomerComplaint(int consumer_ID, string email, string concern)
+        {
+            try
+            {
+                tblCustomerSupport customerSupportObj = new tblCustomerSupport();
+                if (consumer_ID > 0 && email != string.Empty && concern != string.Empty)
+                {
+                    customerSupportObj.Consumer_ID = consumer_ID;
+                    customerSupportObj.Email = email;
+                    customerSupportObj.Concern = concern;
+                    customerSupportObj.ResolvedMessage = string.Empty;
+                    customerSupportObj.IsResolved = false;
+                    customerSupportObj.RaisedDate = DateTime.Now;
+                    customerSupportObj.ResolvedDate = new DateTime(1900, 01, 01);
+                    customerSupportObj.Severity = 0;
+
+                    db.tblCustomerSupports.Add(customerSupportObj);
+
+                    db.SaveChanges();
+                }
+                return customerSupportObj.ID > 0 ? customerSupportObj.ID : 0;
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+
+        [HttpGet]
+        public string GetSessionEmail()
+        {
+            return Session.LoginEmail;
+        }
+
+        [HttpGet]
+        public List<vCustomerSupport> LoadCustomerSupportIssues([FromUri]int isResolved = 0)
+        {
+            return db.vCustomerSupports.Where(x => x.IsResolved == isResolved > 0 ? true : false).ToList();
+        }
+
+        [HttpPost]
+        public bool ResolveCustomerSupportIssue([FromUri] int ID, [FromUri] string resolvedMessage, [FromUri] string consumerName, [FromUri] string consumerEmail)
+        {
+            try
+            {
+                tblCustomerSupport customerSupportObj = new tblCustomerSupport();
+                if (ID > 0 && resolvedMessage != string.Empty)
+                {
+                    customerSupportObj = db.tblCustomerSupports.Where(x => x.ID == ID).FirstOrDefault();
+                    customerSupportObj.ResolvedMessage = resolvedMessage;
+                    customerSupportObj.IsResolved = true;
+                    customerSupportObj.ResolvedDate = DateTime.Now;
+                    customerSupportObj.Severity = 0;
+
+                    db.Entry(customerSupportObj).State = EntityState.Modified;
+                    db.SaveChanges();
+
+                    EmailParameters param = new EmailParameters();
+                    param.ID = ID;
+                    param.fromEmailAddress = "mr.p.kailash@gmail.com";
+                    param.toEmailAddress = consumerEmail;
+                    param.consumerName = consumerName;
+                    param.resolvedMessage = resolvedMessage;
+
+                    SendEmail.TriggerMail(param);
+
+                    return true;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+
+            return false;
+        }
+
         #endregion Member Functions
     }
 }
+ 
