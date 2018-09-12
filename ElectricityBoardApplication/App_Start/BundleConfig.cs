@@ -30,7 +30,8 @@ namespace ElectricityBoardApplication.App_Start
                       "~/Content/bootstrap.css",
                       "~/Content/site.css",
                       "~/Content/font-awesome.css",
-                      "~/Content/jQueryUICss.css"));
+                      "~/Content/jQueryUICss.css",
+                      "~/Content/W3.css"));
 
             BundleTable.EnableOptimizations = true;
         }

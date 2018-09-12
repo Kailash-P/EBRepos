@@ -142,6 +142,7 @@
     <Content Include="Content\Icons\ElectricityBoardAppIcon.png" />
     <Content Include="Content\jQueryUICss.css" />
     <Content Include="Content\Site.css" />
+    <Content Include="Content\W3.css" />
     <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="Global.asax" />
     <Content Include="Images\img_avatar.png" />
@@ -241,6 +242,7 @@
     <Content Include="Scripts\popper-utils.js.map" />
     <Content Include="Views\Login\CustomerSupportPage.cshtml" />
     <Content Include="Views\Login\YourFeedbackPage.cshtml" />
+    <Content Include="Views\Login\ShowFeedbackAnalysisPage.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

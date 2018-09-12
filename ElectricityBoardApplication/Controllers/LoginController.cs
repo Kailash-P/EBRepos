@@ -113,6 +113,14 @@ namespace ElectricityBoardApplication.Controllers
             return View();
         }
 
+        public ViewResult ShowFeedbackAnalysisPage(int loginID, bool isAdmin = false)
+        {
+            ViewBag.LoginID = loginID;
+            ViewBag.IsAdmin = isAdmin;
+
+            return View();
+        }
+
         [HttpPost]
         public void SaveImageToAppData()
         {

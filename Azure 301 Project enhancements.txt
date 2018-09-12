@@ -8,7 +8,7 @@ bulk insert of consumers (storage queue)
 
 implement one feature using Azure function
 
-create a forum to post and receive feedback
+create a forum to post and receive feedback 
 
 if payment is not done on time send a email using azure scheduler
 

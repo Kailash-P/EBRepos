@@ -1,0 +1,83 @@
+﻿<div id="AccountSummaryPage" class="row">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="col-md-2"></div>
+            <div class="col-md-3">
+            </div>
+            <div class="col-md-1">
+                <div class="input-group">
+                    <button class="btn btn-outline-success" id="btnShowConsumptionChart" onclick="AnalyseFeedback()">
+                        <i class="fa fa-refresh"></i>
+                        Analyse Feedback
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-5">
+            </div>
+            <div class="col-md-1">
+                <button class="btn btn-outline-info" type="button" id="btnBackToHome" onclick="BackToHome()">
+                    <i class="fa fa-backward"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<hr />
+<div id="divSentimentAnalysis"></div>
+
+<script type="text/javascript">
+
+    var loginID = 0;
+    var isAdmin = false;
+
+    $(() => {
+        loginID = @ViewBag.LoginID;
+        isAdmin = @(ViewBag.IsAdmin.ToString().ToLower());
+        if (isAdmin) {
+            $('#feedback-form').hide();
+        }
+    });
+    function AnalyseFeedback() {
+        $.get('/ElectricityBoardApi/api/LoginApi/AnalyseConsumerFeedback', function (jData) {
+            if (jData != null && jData.length > 0) {
+                var strHtml = '';
+                $.each(jData, function (key, item) {
+                    strHtml += '<div id="' + item.ID + '" class ="modal-body table table-bordered col-md-9" style = "border-color:lightgreen;">';
+                    strHtml += `<p id="ConsumerName"> <b> Consumer Name: </b> ` + item.ConsumerName + `</p>`;
+                    strHtml += `<p id="Feedback"> <b> Feedback: </b>` + item.FeedBack + `</p>`;
+                    var score = Math.floor(item.Sentiment * 100) / 100;
+
+                    if (score >= 0.10 && score <= 0.50) {
+                        strHtml += `<div class="w3-light-grey w3-round-xlarge">
+                                        <div class="w3-container w3-blue w3-round-xlarge" style="width:25%">25%</div>
+                                    </div>`;
+                    } else if (score > 0.50 && score <= 0.90) {
+                        strHtml += `<div class="w3-light-grey w3-round-xlarge">
+                                        <div class="w3-container w3-yellow w3-round-xlarge" style="width:50%">50%</div>
+                                    </div>`;
+                    } else if (score > 0.90) {
+                        strHtml += `<div class="w3-light-grey w3-round-xlarge">
+                                        <div class="w3-container w3-green w3-round-xlarge" style="width:100%">100%</div>
+                                    </div>`;
+                    } else {
+                        strHtml += `<div class="w3-light-grey">
+                                        <div class="w3-container w3-red w3-round-xlarge" style="width:0.5%">0%</div>
+                                    </div>`;
+                    }
+
+                    strHtml += '</div>';
+                });
+                $('#divSentimentAnalysis').html(strHtml);
+            }
+        });
+    }
+
+    function BackToHome() {
+        if (!isAdmin) {
+            window.location.href = "/ElectricityBoardApplication/Login/HomePage/?loginID=" + loginID + "&IsAdmin=" + isAdmin;
+        } else {
+            window.location.href = "/ElectricityBoardApplication/Login/AdminHomePage/?loginID=" + loginID + "&IsAdmin=" + isAdmin;
+        }
+    }
+</script>
+

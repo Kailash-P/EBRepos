@@ -1,6 +1,6 @@
 ﻿<div class="row">
-    <div class="col-md-1"></div>
-    <div class="modal-body table table-bordered col-md-9" style="border-color:lightgreen;">
+    @*<div class="col-md-1"></div>*@
+    <div class="modal-body table table-bordered col-md-11" style="border-color:lightgreen;">
         <div class="btn-group-lg">
             <button type="button" class="btn-outline-dark" aria-label="Left Align" id="btnAddProfile" onclick="ShowAddConsumerScreen()">
                 <i class="fa fa-user-plus fa-lg" aria-hidden="true"></i> <br />Add Consumer
@@ -19,6 +19,9 @@
             </button>
             <button type="button" class="btn-outline-dark" aria-label="Left Align" onclick="ShowAccountSummaryScreen()">
                 <i class="fa fa-file-pdf-o fa-lg" aria-hidden="true"></i> <br />Account Summary
+            </button>
+            <button type="button" class="btn-outline-dark" aria-label="Left Align" onclick="ShowFeedbackAnalysisScreen()">
+                <i class="fa fa-pie-chart fa-lg" aria-hidden="true"></i> <br />Feedback Analysis
             </button>
         </div>
     </div>
@@ -56,6 +59,10 @@
 
     function ShowSupportQueriesScreen() {
         window.location.href = "/ElectricityBoardApplication/Login/CustomerSupportPage/?loginID=" + loginID + "&IsAdmin=" + isAdmin;
+    }
+
+    function ShowFeedbackAnalysisScreen() {
+        window.location.href = "/ElectricityBoardApplication/Login/ShowFeedbackAnalysisPage/?loginID=" + loginID + "&IsAdmin=" + isAdmin;
     }
 
     function LogOff() {

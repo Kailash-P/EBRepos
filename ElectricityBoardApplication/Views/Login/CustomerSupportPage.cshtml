@@ -1,23 +1,27 @@
 ﻿<div class="row">
-    <div class="col-md-2">
-    </div>
-    <div class="col-md-8">
-        <h2>Support Queries</h2>
-        <select class="form-control" id="ddlIssueFilter">
-            <option value="0">Un-Resolved</option>
-            <option value="1">Resolved</option>
-        </select>
-        <hr />
-        <div id="consumer-queries">
-
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-8">
+                <div class="input-group">
+                    <label for="">Filter &nbsp;</label>
+                    <select class="form-control" id="ddlIssueFilter">
+                        <option value="0">Un-Resolved</option>
+                        <option value="1">Resolved</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-outline-info" type="button" id="btnBackToHome" onclick="BackToHome()">
+                    <i class="fa fa-backward"></i>
+                </button>
+            </div>
         </div>
     </div>
-    <div class="col-md-2">
-        <button class="btn btn-outline-info" type="button" id="btnBackToHome" onclick="BackToHome()">
-            <i class="fa fa-backward"></i>
-        </button>
-    </div>
 </div>
+<hr />
+<div id="consumer-queries"></div>
 
 <script>
 
@@ -38,9 +42,9 @@
                 var strHtml = '';
                 $.each(jData, function (key, item) {
                     strHtml += '<div id="' + item.ID + '" class ="modal-body table table-bordered col-md-9" style = "border-color:lightgreen;">';
-                    strHtml += `<p id="Username"> Consumer Name: ` + item.ConsumerName + `</p>
-                                <p> Raised On: ` + item.RaisedDate + `</p>
-                                <p id="content"> Concern: `+ item.Concern + `</p>`;
+                    strHtml += `<p id="Username"> <b> Consumer Name: </b> ` + item.ConsumerName + `</p>
+                                <p> <b> Raised On: </b>` + item.RaisedDate + `</p>
+                                <p id="content"> <b> Concern: </b>`+ item.Concern + `</p>`;
 
                     strHtml += 'Resolved Status: ';
 

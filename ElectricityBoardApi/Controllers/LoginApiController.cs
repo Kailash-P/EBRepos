@@ -14,9 +14,13 @@ using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using SendGrid;
 using SendGrid.Helpers.Mail;
+using RestSharp;
+using System.Web.Script.Serialization;
+using System.Web.Http.Cors;
 
 namespace ElectricityBoardApi.Controllers
 {
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class LoginApiController : ApiController
     {
         #region Member Variables
@@ -567,6 +571,65 @@ namespace ElectricityBoardApi.Controllers
                 db.SaveChanges();                
             }
             return feedBackObj.ID > 0 ? feedBackObj.ID : 0;
+        }
+
+        [HttpGet]
+        public List<SentimentAnalysis> AnalyseConsumerFeedback()
+        {
+            var list = new List<SentimentAnalysis>();
+            var client = new RestClient("https://brazilsouth.api.cognitive.microsoft.com/text/analytics/v2.0/sentiment");
+            var request = new RestRequest(Method.POST);
+            request.AddHeader("Postman-Token", "d6b94fb3-8520-48cf-bff8-d983397eb7d9");
+            request.AddHeader("Cache-Control", "no-cache");
+            request.AddHeader("Content-Type", "application/json");
+            request.AddHeader("Accept", "application/json");
+            request.AddHeader("Ocp-Apim-Subscription-Key", "72c321385eac4027b570a73b39c90361");
+            var param = GetConsumerFeedBack();
+            if (param != string.Empty)
+            {
+                var res = "{\r\n        \"documents\":  " + param + "  \r\n}";
+                request.AddParameter("undefined", res, ParameterType.RequestBody);
+                IRestResponse response = client.Execute(request);
+                var jsonSerialiser = new JavaScriptSerializer();
+                var result = jsonSerialiser.Deserialize<SentimentResponse>(response.Content).documents.ToList();
+
+                if(result != null && result.Count > 0)
+                {
+                    foreach(var item in result)
+                    {
+                        var feedBackObj = db.tblFeedbacks.Where(x => x.ID == item.id).FirstOrDefault();
+                        if(feedBackObj != null)
+                        {
+                            var consumerObj = db.tblConsumers.Where(x => x.ID == feedBackObj.Consumer_ID).FirstOrDefault();
+                            if(consumerObj != null)
+                            {
+                                SentimentAnalysis analysisObj = new SentimentAnalysis();
+                                analysisObj.ID = item.id;
+                                analysisObj.ConsumerName = consumerObj.ConsumerName;
+                                analysisObj.FeedBack = feedBackObj.Feedback;
+                                analysisObj.Sentiment = item.score;
+
+                                list.Add(analysisObj);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return list;
+        }
+
+        public string GetConsumerFeedBack()
+        {
+            var list = db.tblFeedbacks.ToList();
+            var tempList = list.Select(s => new FeedBack {
+                id=s.ID,
+                languate="en",
+                text=s.Feedback
+            }).ToList();
+
+            var jsonSerialiser = new JavaScriptSerializer();
+            return jsonSerialiser.Serialize(tempList);
         }
 
         #endregion Member Functions
