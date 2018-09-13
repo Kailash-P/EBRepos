@@ -325,7 +325,9 @@
             showNotification('Password does not match!!!', 'error', '');
         }
 
-
+        if (validateEmail($('#txtEmail'))) {
+            return false;
+        }
 
         var obj = {
             UserName: userName,
@@ -545,6 +547,18 @@
         return blob;
     };
 
+    function validateEmail(emailField) {
+        var reg = /^([A-Za-z0-9_\-\.])+\@@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+        if (reg.test(emailField.val()) == false) {
+            showNotification('Invalid email address.', 'error', '');
+            emailField.addClass('btn-outline-danger');
+            return true;
+        } else {
+            emailField.removeClass('btn-outline-danger');
+        }
+
+        return false;
+    }
 
     @*----- EVENT DECLARTIONS -----*@
 
