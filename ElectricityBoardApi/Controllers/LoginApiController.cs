@@ -32,6 +32,12 @@ namespace ElectricityBoardApi.Controllers
 
         #region Member Functions
 
+        [HttpGet]
+        public string Get()
+        {
+            return "Web Api is running.";
+        }
+
         /// <summary>
         /// Validate Login
         /// </summary>
