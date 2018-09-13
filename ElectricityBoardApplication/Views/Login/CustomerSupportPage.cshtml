@@ -37,7 +37,9 @@
 
     function LoadSupportQueries(val) {
         $('#consumer-queries').html('');
+        showNotification('Loading Support issues .....', 'info', '', true);
         $.get('/ElectricityBoardApi/api/LoginApi/LoadCustomerSupportIssues/?isResolved=' + val, function (jData) {
+            hideNotification();
             if (jData && jData.length > 0) {
                 var strHtml = '';
                 $.each(jData, function (key, item) {
@@ -70,11 +72,16 @@
 
     function ResolveIssue(id, name, email) {
         var response = $('#response' + id + '').val();
-        $.post('/ElectricityBoardApi/api/LoginApi/ResolveCustomerSupportIssue/?ID=' + id + '&resolvedMessage=' + response + '&consumerName=' + name + '&consumerEmail=' + email, function (jData) {
-            if (jData) {
-                LoadSupportQueries(0);
-            }
-        });
+        if (response != '') {
+            $.post('/ElectricityBoardApi/api/LoginApi/ResolveCustomerSupportIssue/?ID=' + id + '&resolvedMessage=' + response + '&consumerName=' + name + '&consumerEmail=' + email, function (jData) {
+                if (jData) {
+                    showNotification('Resolved successfully', 'success', '');
+                    LoadSupportQueries(0);
+                }
+            });
+        } else {
+            showNotification('Response cannot be empty.', 'error', '');
+        }
     }
 
     function BackToHome() {

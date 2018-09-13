@@ -148,7 +148,7 @@
 
         if (captcha && captcha != '' && autoCaptcha != captcha) {
             $('#txtCaptcha').addClass('btn-outline-danger');
-            alert('Captcha mismatch');
+            showNotification('Captcha mismatch.', 'error', '');
             Captcha();
             $('#txtCaptcha').val('');
             errorExists = true;
@@ -185,10 +185,10 @@
 
             $.post('/ElectricityBoardApi/api/LoginApi/QuickPay/?consumerNo=' + consumerNo, function (jData) {
                 if (jData) {
-                    alert('Payment done successfully.');
+                    showNotification('Payment done successfully !!!', 'success', '');
                     window.location.href = "/ElectricityBoardApplication/Login/HomePage/?loginID=" + loginID;
                 } else {
-                    alert('Payment already done for the ConsumerNo: ' + consumerNo);
+                    showNotification('Payment already done for the ConsumerNo: ' + consumerNo, 'error', '');
                 }
             });
         }
@@ -205,7 +205,7 @@
     function ValidateConsumerNo(val,loginID) {
         $.post('/ElectricityBoardApi/api/LoginApi/ValidateConsumerNo/?consumerNo=' + val + '&loginID=' + loginID, function (jData) {
             if (!jData) {
-                alert('Invalid ConsumerNo, please check you input.');
+                showNotification('Invalid ConsumerNo, please check your input.', 'error', '');
                 $('#txtConsumerNo').addClass('btn-outline-danger');
                 return false;
             }

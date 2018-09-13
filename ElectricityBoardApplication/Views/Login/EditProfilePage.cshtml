@@ -180,18 +180,20 @@
 
         if (reNewPassword != newPassword) {
             errorExists = true;
-            alert('Password does not match!!!');
+            showNotification('Password does not match.', 'error', '');
         }
 
         if (errorExists) {
             return false;
         } else {
+            showNotification('Saving profile .....', 'info', '', true);
             $.post('/ElectricityBoardApi/api/LoginApi/SaveProfile', { UserName: userName, NewPassword: newPassword, Email: email, ID: loginID, Address: address, City: city, ZipCode: zipCode, ProfilePicture: profilePicture,State:state }, function (jData) {
+                hideNotification();
                 if (jData > 0) {
-                    alert('Profile details saved successfully. Password has been changed please re-login.');
+                    showNotification('Profile details saved successfully. Password has been changed please re-login.', 'success', '');
                     window.location.href = "/ElectricityBoardApplication/Login/LoginPage";
                 } else {
-                    alert('Profile details not saved.');
+                    showNotification('Profile details not saved.', 'error', '');
                     return false;
                 }
             });

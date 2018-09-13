@@ -83,7 +83,7 @@
             var ListofDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
             if (mm == 1 || mm > 2) {
                 if (dd > ListofDays[mm - 1]) {
-                    alert('Invalid date format!');
+                    showNotification('Invalid date format !', 'error', '');
                     return false;
                 }
             }
@@ -93,11 +93,11 @@
                     lyear = true;
                 }
                 if ((lyear == false) && (dd >= 29)) {
-                    alert('Invalid date format!');
+                    showNotification('Invalid date format!', 'error', '');
                     return false;
                 }
                 if ((lyear == true) && (dd > 29)) {
-                    alert('Invalid date format!');
+                    showNotification('Invalid date format!', 'error', '');
                     return false;
                 }
             } else {
@@ -129,21 +129,22 @@
         }
 
         if (!validatedate(startDate)) {
-            alert('Invalid StartDate selection. Please check your input.');
+            showNotification('Invalid StartDate selection. Please check your input.', 'error', '');
             return false;
         }
 
         if (!validatedate(endDate)) {
-            alert('Invalid EndDate selection. Please check your input.');
+            showNotification('Invalid EndDate selection. Please check your input.', 'error', '');
             return false;
         }
 
         if (new Date(startDate) > new Date(endDate)) {
-            alert('Start Date cannot be > End Date.');
+            showNotification('Start Date cannot be > End date.', 'error', '');
             return false;
         }
-
-        $.post('/ElectricityBoardApi/api/LoginApi/SearchPreviousBillStatements/?startDate='+startDate+'&endDate='+endDate, function (jData) {
+        showNotification('Searching .....', 'info', '', true);
+        $.post('/ElectricityBoardApi/api/LoginApi/SearchPreviousBillStatements/?startDate=' + startDate + '&endDate=' + endDate, function (jData) {
+            hideNotification();
             var strHtml = '';
             if (jData && jData.length > 0) {
                 $.each(jData, function (key, item) {
@@ -159,7 +160,7 @@
                 $('#tbody').html(strHtml);
                 return true;
             } else {
-                alert('No records found.');
+                showNotification('No records found.', 'warning', '');
                 $('#tbody').html('');
                 return false;
             }

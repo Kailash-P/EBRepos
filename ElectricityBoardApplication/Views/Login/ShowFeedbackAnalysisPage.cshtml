@@ -38,7 +38,9 @@
         }
     });
     function AnalyseFeedback() {
+        showNotification('Analysing feedback .....', 'info', '', true);
         $.get('/ElectricityBoardApi/api/LoginApi/AnalyseConsumerFeedback', function (jData) {
+            hideNotification();
             if (jData != null && jData.length > 0) {
                 var strHtml = '';
                 $.each(jData, function (key, item) {

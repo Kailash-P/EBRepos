@@ -74,11 +74,12 @@
         var consumerID = $('#ddlConsumer').val();
 
         if (!consumerID || consumerID == 0) {
-            alert('Please select a valid Consumer No.');
+            showNotification('Please select a valid Consumer No.', 'error', '');
             return false;
         }
-
-        $.post('/ElectricityBoardApi/api/LoginApi/SearchConsumerBillStatements/?consumerID='+consumerID, function (jData) {
+        showNotification('Loding bill statements .....', 'info', '', true);
+        $.post('/ElectricityBoardApi/api/LoginApi/SearchConsumerBillStatements/?consumerID=' + consumerID, function (jData) {
+            hideNotification();
             var strHtml = '';
             if (jData && jData.length > 0) {
                 $.each(jData, function (key, item) {
@@ -95,7 +96,7 @@
                 $('#tbody').html(strHtml);
                 return true;
             } else {
-                alert('No records found.');
+                showNotification('No records found.', 'error', '');
                 $('#tbody').html('');
                 return false;
             }
@@ -114,7 +115,7 @@
         var obj = $.grep(consumerBillList, function (item) { return item.ID == id });
 
         if (obj && obj.length > 0 && obj[0].Paid) {
-            alert('Cannot edit a Paid entry.');
+            showNotification('Cannot edit a Paid entry.', 'error', '');
             return false;
         }
     }
@@ -124,19 +125,21 @@
             var obj = $.grep(consumerBillList, function (item) { return item.ID == id });
 
             if (obj && obj.length > 0 && obj[0].Paid) {
-                alert('Cannot delete a Paid entry.');
+                showNotification('Cannot delete a Paid entry.', 'error', '');
                 return false;
             }
 
             var res = confirm('Do you want to delete?');
             if (res) {
-                $.post('/ElectricityBoardApi/api/LoginApi/DeleteConsumerBill/?consumerID=' + consumerID +'&ID=' + id, function (jData) {
+                showNotification('Deleting record.....', 'info', '', true);
+                $.post('/ElectricityBoardApi/api/LoginApi/DeleteConsumerBill/?consumerID=' + consumerID + '&ID=' + id, function (jData) {
+                    hideNotification();
                     if (jData) {
-                        alert('Record deleted successfully!!!');
+                        showNotification('Record deleted successfully !!!', 'success', '');
                         Search();
                         return true;
                     } else {
-                        alert('Record not deleted successfully !!!');
+                        showNotification('Cannot delete the record.', 'error', '');
                         return false;
                     }
                 })

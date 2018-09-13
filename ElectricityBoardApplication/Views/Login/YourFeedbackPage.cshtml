@@ -142,12 +142,14 @@
         if (errorExists) {
             return false;
         } else {
+            showNotification('Saving feedback .....', 'info', '', true);
             $.post('/ElectricityBoardApi/api/LoginApi/SaveFeedBack', { FeedBack: feedBack, FeedBackHeadline: headline, UserName: name, ProfilePicture: image  }, function (jData) {
+                hideNotification();
                 if (jData > 0) {
-                    alert('Thanks for your feedback!!!');
+                    showNotification('Thanks for your feedback !!!', 'success', '');
                     BackToHome();
                 } else {
-                    alert('FeedBack not saved, please check the input.');
+                    showNotification('Record not saved successfully', 'error', '');
                 }
             });
         }

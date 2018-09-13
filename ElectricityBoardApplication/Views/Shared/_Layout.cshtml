@@ -114,9 +114,11 @@
         if (errorExists) {
             return false;
         } else {
+            showNotification('Sending email .....', 'info', '', true);
             $.post('/ElectricityBoardApi/api/LoginApi/SendConsumerSupportEmail/?from=' + fromEmail + '&message=' + message, function (jData) {
+                hideNotification();
                 if (jData == '') {
-                    alert('Mail sent successfully!!!');
+                    showNotification('Mail sent successfully!!!','success','');
                     return true;
                 } else {
                     alert('Mail not delivered.');
@@ -125,6 +127,8 @@
             });
         }
     }
+
+    
 
     @*----- EVENT DECLARATION -----*@
 

@@ -24,14 +24,17 @@ namespace ElectricityBoardApplication.App_Start
                         "~/Scripts/umd/popper.js",
                         "~/Scripts/bootstrap.js",
                         "~/Scripts/respond.js",
-                        "~/Scripts/FileSaver.js"));
+                        "~/Scripts/FileSaver.js",
+                        "~/Scripts/pnotify.custom.min.js",
+                        "~/Scripts/Alert.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/site.css",
                       "~/Content/font-awesome.css",
                       "~/Content/jQueryUICss.css",
-                      "~/Content/W3.css"));
+                      "~/Content/W3.css",
+                      "~/Content/pnotify.custom.min.css"));
 
             BundleTable.EnableOptimizations = true;
         }

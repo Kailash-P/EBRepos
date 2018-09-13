@@ -322,7 +322,7 @@
 
         if (reNewPassword != newPassword) {
             errorExists = true;
-            alert('Password does not match!!!');
+            showNotification('Password does not match!!!', 'error', '');
         }
 
 
@@ -370,6 +370,7 @@
         var regionCode = $('#ddlRegionCode').val();
         var profilePicture = $('#wizardPicturePreview').attr('src');
         if (obj) {
+            showNotification('Saving Profile .....', 'info', '', true);
             $.post('/ElectricityBoardApi/api/LoginApi/ValidateProfile', {
                 UserName: userName,
                 NewPassword: newPassword,
@@ -384,7 +385,8 @@
                 ID: 0
             }, function (jData) {
                 if (jData != '') {
-                    alert(jData);
+                    hideNotification();
+                    showNotification(jData, 'error', '');
                     return false;
                 } else {
                     $.post('/ElectricityBoardApi/api/LoginApi/SaveProfile', {
@@ -402,10 +404,10 @@
                         ID: 0
                     }, function (jData) {
                         if (jData > 0) {
-                            alert('Profile details saved successfully.');
+                            showNotification('Profile details saved successfully.', 'success', '');
                             BackToHome();
                         } else {
-                            alert('Profile details not saved.');
+                            showNotification('Cannot save details.', 'error', '');
                             return false;
                         }
                     });
@@ -475,7 +477,7 @@
 
         var totFiles = document.getElementById("excelFile").files.length;
         if (totFiles == 0) {
-            alert("Please choose file to Import.");
+            showNotification('Please choose file to Import.', 'error', '');
             return false;
         }
 
@@ -485,6 +487,7 @@
         formData.append("FileUpload", file);
 
         if (file.type != null) {
+            showNotification('Importing profiles .....', 'info', '', true);
             $.ajax({
                 url: '/ElectricityBoardApplication/Login/ImportExcel',
                 contentType: false, // Not to set any content header
@@ -492,9 +495,9 @@
                 data: formData,
                 type: "POST",
                 success: function (jData) {
+                    hideNotification();
                     if (jData != null && jData.length > 0) {
                         var strHtml = '';
-                        debugger;
                         $.each(jData, function (key, item) {
                             strHtml += '<tr>';
                             strHtml += '<td>' + item.RowNumber + '</td>';
@@ -509,7 +512,7 @@
                     } else {
                         $('#tbody').html('');
                         $('#excelfile').val('');
-                        alert('Records Imported successfully !!!');
+                        showNotification('Records Imported successfully !!!', 'success', '');
                         return true;
                     }
                 }
@@ -542,7 +545,7 @@
         return blob;
     };
 
-    
+
     @*----- EVENT DECLARTIONS -----*@
 
     $('#txtUserName').change(function () {

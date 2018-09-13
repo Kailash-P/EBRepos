@@ -130,7 +130,7 @@
                 }
             });
         } else {
-            alert('Please select a valid consumer!!!');
+            showNotification('Please select a valid consumer!!!', '', '');
             return false;
         }
     }
@@ -165,12 +165,14 @@
         if (errorExists) {
             return false;
         } else {
-            $.post('/ElectricityBoardApi/api/LoginApi/AddBill', { ConsumerID: consumerID, BillDate: billDate, Units: units, Amount: amount,ID: 0}, function (jData) {
+            showNotification('Saving bill .....', 'info', '', true);
+            $.post('/ElectricityBoardApi/api/LoginApi/AddBill', { ConsumerID: consumerID, BillDate: billDate, Units: units, Amount: amount, ID: 0 }, function (jData) {
+                hideNotification();
                 if (jData) {
-                    alert('Bill saved successfully!!!');
+                    showNotification('Record saved successfully !!!', 'success', '');
                     BackToHome();
                 } else {
-                    alert('Bill not added successfully!!!');
+                    showNotification('Cannot save the record.', '', '');
                     return false;
                 }
             })
