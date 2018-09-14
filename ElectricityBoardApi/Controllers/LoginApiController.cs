@@ -32,6 +32,12 @@ namespace ElectricityBoardApi.Controllers
 
         #region Member Functions
 
+        [HttpGet]
+        public string Get()
+        {
+            return "Web Api is running.";
+        }
+
         /// <summary>
         /// Validate Login
         /// </summary>
@@ -608,6 +614,7 @@ namespace ElectricityBoardApi.Controllers
                                 analysisObj.ConsumerName = consumerObj.ConsumerName;
                                 analysisObj.FeedBack = feedBackObj.Feedback;
                                 analysisObj.Sentiment = item.score;
+                                analysisObj.ConsumerProfilePicture = Convert.ToBase64String(feedBackObj.ConsumerProfilePicture, 0, feedBackObj.ConsumerProfilePicture.Length);
 
                                 list.Add(analysisObj);
                             }

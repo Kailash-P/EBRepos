@@ -14,6 +14,8 @@ namespace ElectricityBoardApi.Models
         public decimal Sentiment { get; set; }
 
         public string FeedBack { get; set; }
+
+        public string ConsumerProfilePicture { get; set; }
     }
 
     public class FeedBack
