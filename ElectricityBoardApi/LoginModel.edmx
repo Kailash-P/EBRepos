@@ -60,6 +60,7 @@ warning 6002: The table/view 'ElectricityBoardDatabase.dbo.ImportProfile' does n
           <Property Name="Paid" Type="bit" Nullable="false" />
           <Property Name="Consumer_ID" Type="int" />
           <Property Name="BillPaidDate" Type="datetime" Nullable="false" />
+          <Property Name="IsPdfGenerated" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="tblConsumer">
           <Key>
@@ -359,6 +360,7 @@ warning 6002: The table/view 'ElectricityBoardDatabase.dbo.vUnitsConsumption' do
           <Property Name="Consumer_ID" Type="Int32" />
           <NavigationProperty Name="tblConsumer" Relationship="LoginDatabaseModel.FK__tblBillHi__Consu__412EB0B6" FromRole="tblBillHistory" ToRole="tblConsumer" />
           <Property Name="BillPaidDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="IsPdfGenerated" Type="Boolean" Nullable="false" />
         </EntityType>
         <EntityType Name="tblConsumer">
           <Key>
@@ -571,6 +573,7 @@ warning 6002: The table/view 'ElectricityBoardDatabase.dbo.vUnitsConsumption' do
           <EntitySetMapping Name="tblBillHistories">
             <EntityTypeMapping TypeName="LoginDatabaseModel.tblBillHistory">
               <MappingFragment StoreEntitySet="tblBillHistory">
+                <ScalarProperty Name="IsPdfGenerated" ColumnName="IsPdfGenerated" />
                 <ScalarProperty Name="BillPaidDate" ColumnName="BillPaidDate" />
                 <ScalarProperty Name="Consumer_ID" ColumnName="Consumer_ID" />
                 <ScalarProperty Name="Paid" ColumnName="Paid" />

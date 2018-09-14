@@ -43,7 +43,7 @@ namespace ElectricityBoardApi.Controllers
         {
             if(userName != string.Empty && password != string.Empty)
             {
-                var list = db.tblLogins.Where(x => x.UserName.ToLower() == userName.Trim().ToLower() && x.Password == password).ToList();
+                var list = db.tblLogins.Where(x => x.UserName.ToLower() == userName.Trim().ToLower() && x.Password == password).Distinct().ToList();
                 if(list != null && list.Count > 0)
                 {
                     Session.Login_ID = list[0].ID;
@@ -631,6 +631,7 @@ namespace ElectricityBoardApi.Controllers
             var jsonSerialiser = new JavaScriptSerializer();
             return jsonSerialiser.Serialize(tempList);
         }
+
 
         #endregion Member Functions
     }

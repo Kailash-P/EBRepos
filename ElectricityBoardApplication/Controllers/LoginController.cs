@@ -1,5 +1,7 @@
 ﻿using ElectricityBoardApplication.Models;
 using ExcelDataReader;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 using System;
@@ -312,5 +314,24 @@ namespace ElectricityBoardApplication.Controllers
             System.Xml.XmlTextWriter xmlTextWriter = new System.Xml.XmlTextWriter(memoryStream, Encoding.UTF8);
             return (T)xs.Deserialize(memoryStream);
         }
+
+        public static CloudStorageAccount GetConnectionString()
+        {
+            string accountname = "301chennai";
+            string key = "5v4AEFp2B/1RsqauelgHm79O8Ml27Vi0IT8FbML7Ao0NEDEIUnI7SvJIAEABnDPUr+k2e1DpLCPK1NVKlHG0SQ==";
+            string connectionString = string.Format("DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1}", accountname, key);
+            return CloudStorageAccount.Parse(connectionString);
+        }
+
+        public FileResult DownloadElectricityBill(string fileName)
+        {
+            CloudStorageAccount cloudStorageAccount = GetConnectionString();
+            CloudBlobClient cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();
+            CloudBlobContainer cloudBlobContainer = cloudBlobClient.GetContainerReference("electricityboardblobcontainer");
+            CloudBlockBlob azureBlockBlob = cloudBlobContainer.GetBlockBlobReference(fileName);
+            Stream blobStream = azureBlockBlob.OpenRead();
+            return File(blobStream, azureBlockBlob.Properties.ContentType, fileName);
+        }
+
     }
 }

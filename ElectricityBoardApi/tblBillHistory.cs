@@ -21,6 +21,7 @@ namespace ElectricityBoardApi
         public bool Paid { get; set; }
         public Nullable<int> Consumer_ID { get; set; }
         public System.DateTime BillPaidDate { get; set; }
+        public bool IsPdfGenerated { get; set; }
     
         public virtual tblConsumer tblConsumer { get; set; }
     }

@@ -84,7 +84,7 @@
             if (jData && jData.length > 0) {
                 $.each(jData, function (key, item) {
                     strHtml += '<tr>';
-                    strHtml += '<td><a style="text-decoration:false;" href="#" onclick=EditBill(' + item.Consumer_ID + ',' + item.ID + ')><i style="display:inline-block; border-radius:25px; box-shadow: 0px 0px 10px #888; padding: 0.5em 0.6em; color:#8a8a8a" class="fa fa-ellipsis-h"></i></a> | <a style="text-decoration:false;" href="#" onclick=DeleteBill(' + item.Consumer_ID + ',' + item.ID + ')><i style="display:inline-block; border-radius:25px; box-shadow: 0px 0px 10px #888; padding: 0.5em 0.6em; color:#8a8a8a" class="fa fa-trash"></i></a></td>';
+                    strHtml += '<td><a style="text-decoration:false;" href="#" onclick=EditBill(' + item.Consumer_ID + ',' + item.ID + ')><i style="display:inline-block; border-radius:25px; box-shadow: 0px 0px 10px #888; padding: 0.5em 0.6em; color:#8a8a8a" class="fa fa-ellipsis-h"></i></a> | <a style="text-decoration:false;" href="#" onclick=DeleteBill(' + item.Consumer_ID + ',' + item.ID + ')><i style="display:inline-block; border-radius:25px; box-shadow: 0px 0px 10px #888; padding: 0.5em 0.6em; color:#8a8a8a" class="fa fa-trash"></i></a> | <button type="button" onclick=DownloadBill(' + item.ID +')><i class="fa fa-download"></i></button></td>';
                     strHtml += '<td>' + item.BillDate + '</td>';
                     strHtml += '<td>' + item.UnitsConsumed + '</td>';
                     strHtml += '<td>' + item.BillAmount + '</td>';
@@ -145,6 +145,10 @@
                 })
             }
         }
+    }
+
+    function DownloadBill(filename) {
+        window.open('/ElectricityBoardApplication/Login/DownloadElectricityBill?fileName=' + "EbBill_" + filename + ".pdf", '_blank');
     }
 
     @*----- EVENT DECLARATION -----*@
